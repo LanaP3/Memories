@@ -3,8 +3,6 @@ import os
 import sys
 from bottle import get, post, request
 from datetime import datetime
-
-from click import password_option
 from model import *
 
 bottle.TEMPLATE_PATH.insert(0, os.path.join(os.getcwd(), "view"))
@@ -15,15 +13,22 @@ def login_page():
 
 @bottle.post("/")
 def login_post():
-    username = bottle.request.forms.getunicode("Username")
-    password = bottle.request.forms.getunicode("Password")
-    if username and password:
-        bottle.redirect("/home_page/")
+    username = bottle.request.forms.getunicode("username")
+    password = bottle.request.forms.getunicode("password")
+    if username == "" or password == "":
+        return bottle.template("login.tpl", error="Please enter your username and password")       
     else:
-        return bottle.template("login.tpl", error="Wrong password")
-
+        #bottle.response.set_cookie("username", username, path="/")
+        bottle.redirect("/home_page/") 
+        
+    
 @bottle.get("/home_page/")
 def home_page():
-    return bottle.template("home_page.tpl")
+    return bottle.template("home_page.tpl", username="...USERNAME...")
+
+#@bottle.post("/home_page/")
+#def home_post():
+#    if bottle.request.
+
 
 bottle.run(reloader=True)
