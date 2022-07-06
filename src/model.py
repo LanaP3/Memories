@@ -25,6 +25,7 @@ class User:
     #        pass
     #    else:
     #        raise Exception as "Username not available"
+    
     def correct_password(self, text):
         return self.password == text
 
@@ -34,42 +35,48 @@ class User:
     #            if user.correct_password(password):
     #                return user
 
-@dataclass
-class Comment:
-    date_added: date
-    comment: str
-
-    def delete(self):
-        pass
 
 @dataclass
 class Image:
     date_added: date
+    owner: User
     name: str
     likes: int
     dislikes: int
     comments: List[Comment]
     
-    def delete(self):
-        pass
+    def delete(self, album, user):
+        if user == self.owner:
+            data = read_json()
+            del data[self.owner][self.owner.albums]["album"]["images"][self.name]
+            write_json(data)
+        else:
+            pass
 
     def download(self):
         pass
 
-    def add_comment(self, comment):
-        self.comments.append(comment)
+    def add_comment(self, album, comment):
+        data = read_json()
+        data[self.owner][self.owner.albums]["album"]["images"][self.name]["comments"].append(comment)
+        write_json(data)
 
-    def like(self):
-        self.likes += 1
+    def like(self,album):
+        data = read_json()
+        data[self.owner][self.owner.albums]["album"]["images"][self.name]["likes"] += 1
+        write_json(data)
 
-    def dislike(self):
-        self.dislikes += 1
+    def dislike(self,album):
+        data = read_json()
+        data[self.owner][self.owner.albums]["album"]["images"][self.name]["dislikes"] += 1
+        write_json(data)
 
-    def rating(self):
-        if self.likes+self.dislikes == 0:
-            return None
-        else:
-            return ((self.likes-self.dislikes)/(self.likes+self.dislikes) * 5) + 5
+    #def rating(self):
+    #    if self.likes+self.dislikes == 0:
+    #        return None
+    #    else:
+    #        return ((self.likes-self.dislikes)/(self.likes+self.dislikes) * 5) + 5
+
 @dataclass
 class Album:
     date_added: date
@@ -78,20 +85,30 @@ class Album:
     access: List[User]
     images: List[Image]
 
-    def delete(self):
-        pass
+    def delete(self, user):
+        if user == self.owner:
+            data = read_json()
+            del data[self.owner][self.owner.albums][self.name]
+            write_json(data) 
+        else:
+            pass
 
     def download(self):
         pass
 
-    def add_image(self):
-        pass
+    def add_image(self, image):
+        data = read_json()
+        data[self.owner][self.owner.albums][self.name]["images"].append(image)
+        write_json(data)
 
-    def change_access(self): #only possible by owner
-        pass
+    def change_access(self, user, username): 
+        if user == self.owner:
+            data = read_json()
+            data[self.owner][self.owner.albums][self.name]["access"].append(username)
+            write_json(data)
+        else:
+            pass
 
-    def sort(self):
-        pass
 
 
 
