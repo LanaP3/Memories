@@ -5,6 +5,7 @@
     <title>Memories</title>
   </head>
   <body>
+    <strong>MEMORIES</strong>
     {{!base}}
     <footer>© 2022, Lana Prijon</footer>
   </body>

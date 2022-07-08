@@ -19,16 +19,31 @@ def login_post():
         return bottle.template("login.tpl", error="Please enter your username and password")       
     else:
         #bottle.response.set_cookie("username", username, path="/")
-        bottle.redirect("/home_page/") 
+        bottle.redirect("/main_page/") 
         
     
-@bottle.get("/home_page/")
-def home_page():
-    return bottle.template("home_page.tpl", username="...USERNAME...")
+@bottle.get("/main_page/")
+def main_page():   
+    username = "**USERNAME**"
+    albums = [Album(2000/1/1,"**USERNAME**", "album_name",[],[])]     ##user's albums
+    images = ["image1"]
+    album_name = "**ALBUM_NAME**"
+    image_id = "**IMAGE**"
+    for album in albums:
+        if "album_name" in request.forms:
+            bottle.redirect("/album/<album_name>/")
+    return bottle.template("main_page.tpl", albums = albums, album_name = album_name, images = images, image_id = image_id, username=username)
 
-#@bottle.post("/home_page/")
-#def home_post():
-#    if bottle.request.
 
+@bottle.get("/album/<album_name>/")
+def album(album_name):
+    username = "**USERNAME**"
+    #images = album_name.images()
+    images = ["image1"]
+    if request.files.get('upload'):
+        upload = request.files.get('upload')
+        #save_picture(user, upload)
+        bottle.redirect('/main_page/')
+    return bottle.template("album.tpl", username = username, images = images)
 
-bottle.run(reloader=True)
+bottle.run(reloader=True, debug=True)

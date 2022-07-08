@@ -9,9 +9,6 @@
                 <i class="fas fa-user"></i>
             </span>
         </div>
-        % if error:
-        <p class="help is-danger">{{ error }}</p>
-        % end
     </div>
     <div class="field">
         <label class="label">Password</label>
@@ -22,9 +19,21 @@
             </span>
         </div>
     </div>
+        % if error:
+        <p class="help is-danger">{{ error }}</p>
+        % end
     <div class="field is-grouped">
         <div class="control">
             <button class="button is-link">Login</button>
+        </div>
+    </div>
+</form>
+
+<p>New user?</p>
+<form method="POST">
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-link">Register</button>
         </div>
     </div>
 </form>
