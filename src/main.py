@@ -7,12 +7,16 @@ from model import *
 
 bottle.TEMPLATE_PATH.insert(0, os.path.join(os.getcwd(), "view"))
 
+@bottle.route('/database/<filename:path>', name='database')
+def serve_static(filename):
+    return bottle.static_file(filename, root= os.path.join(os.getcwd(),'..', "database"))
+
 @bottle.get("/")
-def login_page():
+def login():
     return bottle.template("login.tpl", error=None)
 
 @bottle.post("/")
-def login_post():
+def do_login():
     username = bottle.request.forms.getunicode("username")
     password = bottle.request.forms.getunicode("password")
     if username == "" or password == "":
@@ -21,29 +25,51 @@ def login_post():
         #bottle.response.set_cookie("username", username, path="/")
         bottle.redirect("/main_page/") 
         
-    
 @bottle.get("/main_page/")
-def main_page():   
+def main_page():
     username = "**USERNAME**"
-    albums = [Album(2000/1/1,"**USERNAME**", "album_name",[],[])]     ##user's albums
+    albums = ["album1", "album2", "album3"] 
+    images = ["image1", "image2"]
+    return bottle.template("main_page.tpl", albums = albums, images = images, username = username)  
+       
+@bottle.get("/album/")
+def album(friend=None):
+    username = "**USERNAME**"
+    album ="album1"
     images = ["image1"]
-    album_name = "**ALBUM_NAME**"
-    image_id = "**IMAGE**"
-    for album in albums:
-        if "album_name" in request.forms:
-            bottle.redirect("/album/<album_name>/")
-    return bottle.template("main_page.tpl", albums = albums, album_name = album_name, images = images, image_id = image_id, username=username)
+    return bottle.template("album.tpl", friend=friend, album = album, username = username, images = images)
 
 
-@bottle.get("/album/<album_name>/")
-def album(album_name):
-    username = "**USERNAME**"
-    #images = album_name.images()
-    images = ["image1"]
-    if request.files.get('upload'):
-        upload = request.files.get('upload')
-        #save_picture(user, upload)
-        bottle.redirect('/main_page/')
-    return bottle.template("album.tpl", username = username, images = images)
+@bottle.post("/log_out/")
+def log_out():
+    bottle.redirect("/")
+
+#@bottle.post("/main_page/")
+#def main_action():   
+#    #username = "**USERNAME**"
+#    #albums = ["album1", "album2", "album3"]    
+#    #images = ["image1", "image2"]
+#    for album in albums:
+#        if request.forms.get("album"):
+#            bottle.redirect("/album/")
+#    #else:
+#    #    return bottle.template("main_page.tpl", albums = albums, images = images, username = username)
+
+@bottle.post("/add_friend/")
+def add_friend():
+    friend = bottle.request.forms.getunicode("friend")
+    if friend == "":
+        bottle.redirect("/album/")       
+    else:
+        return album(friend)
+    
+@bottle.post("/add_to_album/")
+def add_to_album():
+    album = bottle.request.forms.getunicode("album")
+    if album == "":
+        bottle.redirect("/main_page/") 
+    else:
+        return main_page() #izpis "**IMAGE** has been added to **ALBUM**"
+
 
 bottle.run(reloader=True, debug=True)
