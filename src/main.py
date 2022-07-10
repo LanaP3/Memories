@@ -5,7 +5,7 @@ from bottle import get, post, request
 from datetime import datetime
 from model import *
 
-bottle.TEMPLATE_PATH.insert(0, os.path.join(os.getcwd(), "view"))
+bottle.TEMPLATE_PATH.insert(0, os.path.join(os.getcwd(), "views"))
 
 @bottle.route('/database/<filename:path>', name='database')
 def serve_static(filename):
@@ -22,7 +22,6 @@ def do_login():
     if username == "" or password == "":
         return bottle.template("login.tpl", error="Please enter your username and password")       
     else:
-        #bottle.response.set_cookie("username", username, path="/")
         bottle.redirect("/main_page/") 
         
 @bottle.get("/main_page/")
@@ -37,23 +36,12 @@ def album(friend=None):
     username = "**USERNAME**"
     album ="album1"
     images = ["image1"]
-    return bottle.template("album.tpl", friend=friend, album = album, username = username, images = images)
+    return bottle.template("album.tpl", likes=1,dislikes=2,friend=friend, album = album, username = username, images = images)
 
 
 @bottle.post("/log_out/")
 def log_out():
     bottle.redirect("/")
-
-#@bottle.post("/main_page/")
-#def main_action():   
-#    #username = "**USERNAME**"
-#    #albums = ["album1", "album2", "album3"]    
-#    #images = ["image1", "image2"]
-#    for album in albums:
-#        if request.forms.get("album"):
-#            bottle.redirect("/album/")
-#    #else:
-#    #    return bottle.template("main_page.tpl", albums = albums, images = images, username = username)
 
 @bottle.post("/add_friend/")
 def add_friend():
@@ -70,6 +58,12 @@ def add_to_album():
         bottle.redirect("/main_page/") 
     else:
         return main_page() #izpis "**IMAGE** has been added to **ALBUM**"
+
+@bottle.post("/album/")
+def album_action():
+    #for image in album_images:
+    #functions: add likes, dislikes, comments
+    bottle.redirect("/album/")
 
 
 bottle.run(reloader=True, debug=True)

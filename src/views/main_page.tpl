@@ -35,6 +35,7 @@
 
 %for image in images:
 <p>{{image}}</p>
+
 <form action="/add_to_album/" method="POST">
     <div class="field">
         <div class="control has-icons-left">
@@ -49,9 +50,9 @@
             <button class="button is-link">add to album</button>
         </div>
     </div>
-#%if album:
-#<p class="help is-danger">{{image}} has been added to **ALBUM**.</p>
-#%end
+%if album:
+<p class="help is-danger">{{image}} has been added to **ALBUM**.</p>
+%end
 </form>
 %end
 
