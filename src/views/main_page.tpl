@@ -22,7 +22,7 @@
 </form>
 <br>
 
-%for album in albums:
+%for album in username.albums:
 <form action="/album/" method="get">
     <div class="field is-grouped">
         <div class="control">
@@ -33,7 +33,7 @@
 %end
 
 
-%for image in images:
+%for image in username.images:
 <p>{{image}}</p>
 
 <form action="/add_to_album/" method="POST">
@@ -51,7 +51,7 @@
         </div>
     </div>
 %if album:
-<p class="help is-danger">{{image}} has been added to **ALBUM**.</p>
+<p class="help is-danger">{{image}} has been added to {{album}}.'</p>
 %end
 </form>
 %end

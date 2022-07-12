@@ -6,8 +6,8 @@ import os
 import json
 import re
 
-path_to_json = os.path.join(os.getcwd(),'..', "database", "data.json")
-picture_path = os.path.join(os.getcwd(),'..', "database")
+path_to_json = os.path.join(os.getcwd(),'..', "data", "data.json")
+picture_path = os.path.join(os.getcwd(),'..', "data")
 
 def read_json():
     with open(path_to_json, "r") as json_file:
@@ -27,8 +27,9 @@ def username_available(data, username):
 def find_user(data, username, password):
     for user in data:
         if username == user:
-            if password == data[user][password]:
+            if password == data[user]["password"]:
                 return user
+
 def set_image_size():
     pass
 
@@ -150,10 +151,10 @@ class Album:
         data[self.owner][self.owner.albums][self.name]["images"].append(image)
         write_json(data)
 
-    def change_access(self, user, username): 
+    def change_access(self, user, friend): 
         if user == self.owner:
             data = read_json()
-            data[self.owner][self.owner.albums][self.name]["access"].append(username)
+            data[self.owner][self.owner.albums][self.name]["access"].append(friend)
             write_json(data)
         else:
             pass
