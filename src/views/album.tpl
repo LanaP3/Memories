@@ -41,7 +41,7 @@
     </div>
 </form>
 
-%for image in images:
+%for image in username.images:
 {{image}}
 
 <form action="/album/" method="POST">
