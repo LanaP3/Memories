@@ -23,6 +23,12 @@ def current_album():
     else:
         bottle.redirect("/main_page/")
 
+def current_image():
+    image = bottle.request.get_cookie("image", secret=CODE)
+    if image:
+        pass
+    else:
+        bottle.redirect("/album/")
 
 @bottle.route('/database/<filename:path>', name='database')
 def serve_static(filename):
@@ -32,15 +38,26 @@ def serve_static(filename):
 def login():
     return bottle.template("login.tpl", error=None)
 
+#kako preveriti kateri gumb je bil pritisnjen? ("login" ali "register")
 @bottle.post("/")
 def do_login():
     username = bottle.request.forms.getunicode("username")
     password = bottle.request.forms.getunicode("password")
     if username and password:
         data = read_json()
-        if find_user(data, username, password):
-            bottle.response.set_cookie("account", username, path="/main_page/", secret=CODE)
-            bottle.redirect("/main_page/")          
+        if ...:
+            if find_user(data, username, password):
+                bottle.response.set_cookie("account", username, path="/main_page/", secret=CODE)
+                bottle.redirect("/main_page/")
+            else:
+                return bottle.template("login.tpl", error="Your password is incorrect.")
+        else:
+            if username_available(data, username):
+                User.register(username, password)
+                bottle.response.set_cookie("account", username, path="/main_page/", secret=CODE)
+                bottle.redirect("/main_page/")
+            else:
+                return bottle.template("login.tpl", error="Please choose your username and password.")             
     else:
         return bottle.template("login.tpl", error="Please enter your username and password.") 
         
@@ -49,13 +66,34 @@ def main_page():
     username = current_account()
     if current_album():
         bottle.response.delete_cookie("album")
-    return bottle.template("main_page.tpl", username=username)  
-       
+    return bottle.template("main_page.tpl", username=username)
+
+@bottle.post("/main_page/") 
+def main_page_action():
+    username = current_account()
+    album_name = bottle.request.forms.getunicode("new_album")
+    image_name = bottle.request.forms.getunicode("image_name")
+    upload = bottle.request.files.get('upload')
+    if album...:
+        bottle.response.set_cookie("album", album, path="/album/", secret=CODE)
+        bottle.redirect("/album/")
+    elif album_name:
+        username.new_album(album_name)
+    elif upload and image_name:
+        username.new_image(upload, image_name)
+    bottle.redirect("/main_page/")
+    
 @bottle.get("/album/")
 def album(friend=None):
     username = current_account()
     album = current_album()
     return bottle.template("album.tpl", friend=friend, username=username, album=album)
+
+@bottle.get("/image/")
+def image():
+    username = current_account()
+    album = current_album()
+    image = current_image()
 
 
 @bottle.post("/log_out/")
@@ -85,12 +123,6 @@ def add_to_album():
         album = bottle.request.forms.getunicode("album")
         album.add_image("image") #kera slika??
         return main_page() #izpis "**IMAGE** has been added to **ALBUM**"
-
-@bottle.post("/album/")
-def enter_album():
-    album = bottle.request.forms.getunicode("album")
-    bottle.response.set_cookie("album", album, path="/album/", secret=CODE)
-    bottle.redirect("/album/")
 
 
 bottle.run(reloader=True, debug=True)

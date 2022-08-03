@@ -12,12 +12,17 @@
     <input name = main_page value="main page" type="submit" class="btn btn-outline-primary"/>
 </form>
 <p>
-{{album}}
-</p>
-<form action="/add_friend/" method="POST">
+
+{{image}}
+<form action="/album/" method="POST">
+<b>{{likes}} </b>  <input name = "like" value= "like" type="submit" class="btn btn-danger btn-sm">
+<b>{{dislikes}} </b>  <input name = "dislike" value= "dislike" type="submit" class="btn btn-danger btn-sm">
+</form>
+
+<form action="/album/" method="POST">
     <div class="field">
         <div class="control has-icons-left">
-            <input class="input" name="friend" type="text" placeholder="friend's name">
+            <input class="input" name="comment" type="text" placeholder="comment">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
@@ -25,19 +30,9 @@
     </div>
     <div class="field is-grouped">
         <div class="control">
-            <button class="button is-link">add friend</button>
+            <button class="button is-link">add comment</button>
         </div>
     </div>
-%if friend:
-<p class="help is-danger">{{friend}} has been added to the album.</p>
+</form>
 %end
-</form>
-
-%for image in album.images:
-<form action="/image/" method="get">
-    <div class="field is-grouped">
-        <div class="control">
-            <button class="button is-link">image</button>
-        </div>
-    </div>
-</form>
+</p>

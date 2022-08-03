@@ -6,8 +6,8 @@ import os
 import json
 import re
 
-path_to_json = os.path.join(os.getcwd(),'..', "data", "data.json")
-picture_path = os.path.join(os.getcwd(),'..', "data")
+path_to_json = os.path.join(os.getcwd(),'..', "database", "data.json")
+picture_path = os.path.join(os.getcwd(),'..', "database")
 
 def read_json():
     with open(path_to_json, "r") as json_file:
@@ -45,6 +45,7 @@ class User:
         return self.password == text
 
     @staticmethod
+    #upostevam ze v main da je available, pogoj lahko tukaj kasneje zbrisem
     def register(username, password):
         data = read_json()
         if username_available(data, username):
@@ -65,7 +66,7 @@ class User:
             data[self.username]["albums"].append(new_album)
             write_json(data)
     
-    def new_image(self, upload):
+    def new_image(self, upload, image_name):
         name, ext = os.path.splitext(upload.filename)
         image_id = f"{name}_{self.username}"
         image_path =  os.path.join(image_path, image_id + f"{ext}")

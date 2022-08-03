@@ -19,9 +19,9 @@
             </span>
         </div>
     </div>
-        % if error:
-        <p class="help is-danger">{{ error }}</p>
-        % end
+    % if error:
+    <p class="help is-danger">{{ error }}</p>
+    % end
     <div class="field is-grouped">
         <div class="control">
             <button class="button is-link">Login</button>
