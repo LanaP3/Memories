@@ -5,8 +5,8 @@ from bottle import get, post, request
 from datetime import datetime
 from model import *
 
-bottle.TEMPLATE_PATH.insert(0, os.path.join(os.getcwd(), "views"))
-with open('secret.txt') as d:
+path_to_code = os.path.join(os.getcwd(),'..', "database", "secret.txt")
+with open(path_to_code, "r") as d:
     CODE = d.read()
 
 def current_account():
@@ -38,29 +38,36 @@ def serve_static(filename):
 def login():
     return bottle.template("login.tpl", error=None)
 
-#kako preveriti kateri gumb je bil pritisnjen? ("login" ali "register")
-@bottle.post("/")
+#a fix loci med username,password za log in in za register?
+@bottle.post("/log_in/")
 def do_login():
     username = bottle.request.forms.getunicode("username")
     password = bottle.request.forms.getunicode("password")
     if username and password:
         data = read_json()
-        if ...:
-            if find_user(data, username, password):
-                bottle.response.set_cookie("account", username, path="/main_page/", secret=CODE)
-                bottle.redirect("/main_page/")
-            else:
-                return bottle.template("login.tpl", error="Your password is incorrect.")
+        if find_user(data, username, password):
+            bottle.response.set_cookie("account", username, path="/main_page/", secret=CODE)
+            bottle.redirect("/main_page/")
         else:
-            if username_available(data, username):
-                User.register(username, password)
-                bottle.response.set_cookie("account", username, path="/main_page/", secret=CODE)
-                bottle.redirect("/main_page/")
-            else:
-                return bottle.template("login.tpl", error="Please choose your username and password.")             
+            return bottle.template("login.tpl", error="Your password is incorrect.")
+    else:
+        return bottle.template("login.tpl", error="Please enter your username and password.")        
+
+@bottle.post("/register/")
+def register():
+    username = bottle.request.forms.getunicode("username")
+    password = bottle.request.forms.getunicode("password")
+    if username and password:
+        data = read_json()
+        if username_available(data, username):
+            User.register(username, password)
+            bottle.response.set_cookie("account", username, path="/main_page/", secret=CODE)
+            bottle.redirect("/main_page/")
+        else:
+            return bottle.template("login.tpl", error="Please choose your username and password.")             
     else:
         return bottle.template("login.tpl", error="Please enter your username and password.") 
-        
+       
 @bottle.get("/main_page/")
 def main_page():
     username = current_account()
@@ -74,7 +81,7 @@ def main_page_action():
     album_name = bottle.request.forms.getunicode("new_album")
     image_name = bottle.request.forms.getunicode("image_name")
     upload = bottle.request.files.get('upload')
-    if album...:
+    if album:
         bottle.response.set_cookie("album", album, path="/album/", secret=CODE)
         bottle.redirect("/album/")
     elif album_name:

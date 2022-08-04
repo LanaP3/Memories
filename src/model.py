@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import datetime
 from datetime import date
 from typing import List
 from PIL import Image, ImageFilter
@@ -79,7 +80,7 @@ class User:
         data = read_json()
         if image_id in data["all_images"]:    #image already saved
             return None
-        data[image_id] = {"owner": user, "likes" : 0, "image_name": f"{name}_{user}", "dislikes" : 0, "comments" : [], "date": datetime.now().__str__(), "ext": ext, "labels" : []}
+        data[image_id] = {"owner": self.username, "likes" : 0, "image_name": f"{name}_{self.username}", "dislikes" : 0, "comments" : [], "date": datetime.date.today().__str__(), "ext": ext, "labels" : []}
         write_json(data)
     
     def get_albums(self):
