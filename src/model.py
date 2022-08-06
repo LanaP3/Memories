@@ -36,25 +36,24 @@ def set_image_size():
 
 
 class User:
-    def __init__(self, username, password, images=[], albums=[]):
+    def __init__(self, username):
+        data = read_json()
         self.username = username
-        self.password = password
-        self.images = images
-        self.albums = albums
+        self.password = data[username]["password"]
+        self.images = data[username]["images"]
+        self.albums = [Album(album, self.username) for album in data[username]["albums"]]
     
     def correct_password(self, text):
         return self.password == text
 
     @staticmethod
-    #upostevam ze v main da je available, pogoj lahko tukaj kasneje zbrisem
     def register(username, password):
         data = read_json()
-        if username_available(data, username):
-            new_user = User(username, password)
-            data[username] = {"password":new_user.password, "images":new_user.images, "albums":new_user.albums}
-            write_json(data)
-        else:
-            pass
+        data[username] = {}
+        data[username]["password"] = password
+        data[username]["images"] = []
+        data[username]["albums"] = []
+        write_json(data)
 
     def album_available(self, album_name):
         data = read_json()
@@ -62,9 +61,13 @@ class User:
 
     def new_album(self, album_name):
         if self.album_available(album_name):
-            new_album = Album(album_name)
+            new_album = Album(album_name, self.username)
             data = read_json()
-            data[self.username]["albums"].append(new_album)
+            data[self.username]["albums"].append(album_name)
+            data[self.username]["albums"][album_name]["owner"] = new_album.owner
+            data[self.username]["albums"][album_name]["access"] = new_album.access
+            data[self.username]["albums"][album_name]["date_added"] = new_album.date_added
+            data[self.username]["albums"][album_name]["images"] = new_album.images
             write_json(data)
     
     def new_image(self, upload, image_name):
@@ -131,11 +134,12 @@ class Image:
 
 @dataclass
 class Album:
-    date_added: date
-    owner: User
-    name: str
-    access: List[User]
-    images: List[Image]
+    def __init__(self, name, owner):
+        self.name = name
+        self.owner = owner
+        self.date_added = datetime.date.today()
+        self.access = [owner]
+        self.images = []
 
     def delete(self, user):
         if user == self.owner:

@@ -12,16 +12,14 @@ with open(path_to_code, "r") as d:
 def current_account():
     username = bottle.request.get_cookie("account", secret=CODE)
     if username:
-        return find_user(username)
+        return User(username)
     else:
         bottle.redirect("/login/")
 
 def current_album():
     album = bottle.request.get_cookie("album", secret=CODE)
     if album:
-        pass
-    else:
-        bottle.redirect("/main_page/")
+        return Album(album)
 
 def current_image():
     image = bottle.request.get_cookie("image", secret=CODE)
@@ -64,7 +62,7 @@ def register():
             bottle.response.set_cookie("account", username, path="/main_page/", secret=CODE)
             bottle.redirect("/main_page/")
         else:
-            return bottle.template("login.tpl", error="Please choose your username and password.")             
+            return bottle.template("login.tpl", error="Please choose another username.")             
     else:
         return bottle.template("login.tpl", error="Please enter your username and password.") 
        

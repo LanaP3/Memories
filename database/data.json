@@ -1,0 +1,20 @@
+{
+    "lana": {
+        "password": "bbb",
+        "images": [],
+        "albums": {
+            "my_album": {
+                "date_added": "2022-08-05",
+                "owner": "lana",
+                "name": "my_album",
+                "acces": "lana",
+                "images": []
+            }
+        }
+    },
+    "s": {
+        "password": "s",
+        "images": [],
+        "albums": []
+    }
+}

@@ -1,5 +1,5 @@
 % rebase('base.tpl')
-<p>{{username}}</p>
+<p>{{username.username}}</p>
 <form action="/log_out/" method="POST">
     <div class="field is-grouped">
         <div class="control">
@@ -30,12 +30,11 @@
 </form>
 <br>
 
-#nastimaj da vsak album dobi gumb s svojim id!!!
 %for album in username.albums:
 <form action="/album/" method="get">
     <div class="field is-grouped">
         <div class="control">
-            <button class="button is-link">album</button>
+            <button class="button is-link">{{album.name}}</button>
         </div>
     </div>
 </form>
