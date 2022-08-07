@@ -26,7 +26,7 @@
     </div>
 </form>
 % if error:
-<p class="help is-danger">{{ error }}</p>
+<p class="help is-danger">{{error}}</p>
 % end
 <p>New user?</p>
 <form action="/register/", method="POST">

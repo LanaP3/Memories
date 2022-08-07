@@ -10,9 +10,9 @@
 
 <form method="POST">
     <div class="field">
-        <label class="label">Album name</label>
+        <label class="label">Create new album:</label>
         <div class="control has-icons-left">
-            <input class="input" name="new_album" type="text" placeholder="new_album">
+            <input class="input" name="new_album" type="text" placeholder="album's name">
             <span class="icon is-small is-left">
                 <i class="fas fa-user"></i>
             </span>
@@ -23,9 +23,8 @@
     </div>
 </form>
 <br>
-<form action="/main_page/" enctype="multipart/form-data">
+<form action="/main_page/", method="POST", enctype="multipart/form-data">
     Upload new photo: <input type="file" name="upload" />
-    <input class="input" name="image_name" type="text" placeholder="image_name">
     <input class="form-control" type="submit" value="upload" />
 </form>
 <br>
@@ -42,9 +41,11 @@
 
 
 %for image in username.images:
+<div>
+<img src= "{{ get_url('database', filename= image) }}" class="img-fluid" />
+</div>
 <form method="POST">
     <div class="field">
-        <label class="label">album's name</label>
         <div class="control has-icons-left">
             <input class="input" name="album_name" type="text" placeholder="album's name">
             <span class="icon is-small is-left">
@@ -52,14 +53,11 @@
             </span>
         </div>
     </div>
-    % if error:
-    <p class="help is-danger">{{ error }}</p>
-    % end
     <div class="field is-grouped">
         <div class="control">
             <button class="button is-link">Add to album</button>
         </div>
     </div>
 </form>
-
+%end
 

@@ -9,6 +9,9 @@ path_to_code = os.path.join(os.getcwd(),'..', "database", "secret.txt")
 with open(path_to_code, "r") as d:
     CODE = d.read()
 
+app = bottle.default_app()
+bottle.BaseTemplate.defaults['get_url'] = app.get_url
+
 def current_account():
     username = bottle.request.get_cookie("account", secret=CODE)
     if username:
@@ -77,15 +80,14 @@ def main_page():
 def main_page_action():
     username = current_account()
     album_name = bottle.request.forms.getunicode("new_album")
-    image_name = bottle.request.forms.getunicode("image_name")
     upload = bottle.request.files.get('upload')
-    if album:
-        bottle.response.set_cookie("album", album, path="/album/", secret=CODE)
+    if current_album():
+        bottle.response.set_cookie("album", current_album(), path="/album/", secret=CODE)
         bottle.redirect("/album/")
     elif album_name:
         username.new_album(album_name)
-    elif upload and image_name:
-        username.new_image(upload, image_name)
+    elif upload:
+        username.new_image(upload)
     bottle.redirect("/main_page/")
     
 @bottle.get("/album/")

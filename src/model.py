@@ -8,7 +8,7 @@ import json
 import re
 
 path_to_json = os.path.join(os.getcwd(),'..', "database", "data.json")
-picture_path = os.path.join(os.getcwd(),'..', "database")
+image_path = os.path.join(os.getcwd(),'..', "database")
 
 def read_json():
     with open(path_to_json, "r") as json_file:
@@ -31,8 +31,12 @@ def find_user(data, username, password):
             if password == data[user]["password"]:
                 return user
 
-def set_image_size():
-    pass
+def set_image_size(image_path, basewidth):
+    img = Image.open(image_path)
+    wpercent = (basewidth/float(img.size[0]))
+    hsize = int((float(img.size[1])*float(wpercent)))
+    img = img.resize((basewidth,hsize), Image.ANTIALIAS)
+    img.save(image_path)
 
 
 class User:
@@ -41,8 +45,8 @@ class User:
         self.username = username
         self.password = data[username]["password"]
         self.images = data[username]["images"]
-        self.albums = [Album(album, self.username) for album in data[username]["albums"]]
-    
+        self.albums = [Album(album, username) for album in data[username]["albums"]]
+
     def correct_password(self, text):
         return self.password == text
 
@@ -52,7 +56,7 @@ class User:
         data[username] = {}
         data[username]["password"] = password
         data[username]["images"] = []
-        data[username]["albums"] = []
+        data[username]["albums"] = {}
         write_json(data)
 
     def album_available(self, album_name):
@@ -63,27 +67,28 @@ class User:
         if self.album_available(album_name):
             new_album = Album(album_name, self.username)
             data = read_json()
-            data[self.username]["albums"].append(album_name)
+            data[self.username]["albums"][album_name] = {}
             data[self.username]["albums"][album_name]["owner"] = new_album.owner
             data[self.username]["albums"][album_name]["access"] = new_album.access
             data[self.username]["albums"][album_name]["date_added"] = new_album.date_added
             data[self.username]["albums"][album_name]["images"] = new_album.images
             write_json(data)
     
-    def new_image(self, upload, image_name):
+    def new_image(self, upload):
         name, ext = os.path.splitext(upload.filename)
-        image_id = f"{name}_{self.username}"
-        image_path =  os.path.join(image_path, image_id + f"{ext}")
+        image_id = f"{name}.{self.username}{ext}"
+        save_path =  os.path.join(image_path, image_id)
         if ext not in ('.jpg', '.jpeg', '.png'):
             return "Please only use '.jpeg', '.jpg' or '.png' file extensions."
-        with open(image_path, "wb") as image_file:
+        with open(save_path, "wb") as image_file:
             image_file.write(upload.file.read())
-        set_image_size(image_path, 800)
+        set_image_size(save_path, 200)
         
         data = read_json()
-        if image_id in data["all_images"]:    #image already saved
+        if image_id in data[self.username]["images"]:    #image already saved
             return None
-        data[image_id] = {"owner": self.username, "likes" : 0, "image_name": f"{name}_{self.username}", "dislikes" : 0, "comments" : [], "date": datetime.date.today().__str__(), "ext": ext, "labels" : []}
+        self.images.append(image_id)
+        data[self.username]["images"].append(image_id)
         write_json(data)
     
     def get_albums(self):
@@ -92,7 +97,7 @@ class User:
 
 
 @dataclass
-class Image:
+class Picture:
     date_added: date
     owner: User
     name: str
@@ -137,9 +142,9 @@ class Album:
     def __init__(self, name, owner):
         self.name = name
         self.owner = owner
-        self.date_added = datetime.date.today()
+        self.date_added = str(datetime.date.today())
         self.access = [owner]
-        self.images = []
+        self.images = {}
 
     def delete(self, user):
         if user == self.owner:
