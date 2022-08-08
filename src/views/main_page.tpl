@@ -1,20 +1,14 @@
-% rebase('base.tpl')
+% rebase('base.tpl', current_page = "Home page")
 <p>{{username.username}}</p>
-<form action="/log_out/" method="POST">
-    <div class="field is-grouped">
-        <div class="control">
-            <button class="button is-link">Log out</button>
-        </div>
-    </div>
-</form>
 
-<form method="POST">
+
+<form action="/new_album/" method="POST">
     <div class="field">
         <label class="label">Create new album:</label>
         <div class="control has-icons-left">
             <input class="input" name="new_album" type="text" placeholder="album's name">
             <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
+                <i class="fa fa-book" aria-hidden="true"></i>
             </span>
         </div>
         <div class="control">
@@ -30,7 +24,7 @@
 <br>
 
 %for album in username.albums:
-<form action="/album/" method="get">
+<form action="/album/{{album.name}}" method="GET">
     <div class="field is-grouped">
         <div class="control">
             <button class="button is-link">{{album.name}}</button>
@@ -44,12 +38,12 @@
 <div>
 <img src= "{{ get_url('database', filename= image) }}" class="img-fluid" />
 </div>
-<form method="POST">
+<form action="/add_to_album/", method="POST">
     <div class="field">
         <div class="control has-icons-left">
             <input class="input" name="album_name" type="text" placeholder="album's name">
             <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
+                <i class="fa fa-book" aria-hidden="true"></i>
             </span>
         </div>
     </div>

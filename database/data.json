@@ -2,21 +2,17 @@
     "lana": {
         "password": "bbb",
         "images": [
-            "background.lana.jpg"
+            "background_japan.lana.jpg"
         ],
         "albums": {
-            "my_album": {
-                "date_added": "2022-08-05",
+            "bbb": {
                 "owner": "lana",
-                "name": "my_album",
-                "acces": "lana",
+                "access": [
+                    "lana"
+                ],
+                "date_added": "2022-08-08",
                 "images": {}
             }
         }
-    },
-    "s": {
-        "password": "s",
-        "images": {},
-        "albums": {}
     }
 }

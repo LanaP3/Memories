@@ -1,18 +1,8 @@
-% rebase('base.tpl')
-<p>{{username}}</p>
-<form action="/" method="POST">
-    <div class="field is-grouped">
-        <div class="control">
-            <button class="button is-link">Log out</button>
-        </div>
-    </div>
-</form>
+% rebase('base.tpl', current_page=album.name)
+<p>{{username.username}}</p>
 
-<form action="/main_page/" method="get">
-    <input name = main_page value="main page" type="submit" class="btn btn-outline-primary"/>
-</form>
 <p>
-{{album}}
+{{album.name}}
 </p>
 <form action="/add_friend/" method="POST">
     <div class="field">
