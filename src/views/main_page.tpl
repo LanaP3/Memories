@@ -24,6 +24,7 @@
 <br>
 
 %for album in account.albums:
+%if album.owner == account.username:
 <form action="/album/{{album.name}}" method="POST">
     <div class="field is-grouped">
         <div class="control">
@@ -31,6 +32,17 @@
         </div>
     </div>
 </form>
+%else:
+<strong>Friends' albums:</strong>
+<p>"{{album.owner}}'s album:"</p>
+<form action="/album/{{album.name}}" method="POST">
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-link">{{album.name}}</button>
+        </div>
+    </div>
+</form>
+%end
 %end
 
 

@@ -125,17 +125,17 @@ class Picture:
 
     def add_comment(self, album, comment):
         data = read_json()
-        data[self.owner][self.owner.albums]["album"]["images"][self.name]["comments"].append(comment)
+        data[self.owner]["albums"][album.name]["images"][self.name]["comments"].append(comment)
         write_json(data)
 
     def like(self,album):
         data = read_json()
-        data[self.owner][self.owner.albums]["album"]["images"][self.name]["likes"] += 1
+        data[self.owner]["albums"][album.name]["images"][self.name]["likes"] += 1
         write_json(data)
 
     def dislike(self,album):
         data = read_json()
-        data[self.owner][self.owner.albums]["album"]["images"][self.name]["dislikes"] += 1
+        data[self.owner]["albums"][album.name]["images"][self.name]["dislikes"] += 1
         write_json(data)
 
     #def rating(self):
@@ -176,14 +176,15 @@ class Album:
         data[self.owner][self.owner.albums][self.name]["images"].append(image)
         write_json(data)
 
-    def change_access(self, user, friend): 
-        if user.username == self.owner:
-            data = read_json()
-            data[self.owner][self.owner.albums][self.name]["access"].append(friend)
-            #data[friend.username][friend.albums][self.name]#append(friend)
-            write_json(data)
-        else:
-            pass
+    def change_access(self, friend_name):
+        data = read_json()
+        data[self.owner.username]["albums"][self.name]["access"].append(friend_name)
+        data[friend_name]["albums"][self.name] = {}
+        data[friend_name]["albums"][self.name]["owner"] = self.owner.username
+        data[friend_name]["albums"][self.name]["access"] = self.access
+        data[friend_name]["albums"][self.name]["date_added"] = self.date_added
+        data[friend_name]["albums"][self.name]["images"] = self.images
+        write_json(data)
 
 
 

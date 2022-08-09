@@ -119,7 +119,7 @@ def add_friend():
         if friend_name in data:
             if friend_name not in album.access:
                 error = f"Your friend {friend_name} has been added to album."
-                album.change_access(account, friend_name)
+                album.change_access(friend_name)
     if error == None:
         error = "Please enter your friends username."  
     return albums(error)                              
