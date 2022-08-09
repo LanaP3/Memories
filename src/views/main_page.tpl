@@ -1,5 +1,5 @@
 % rebase('base.tpl', current_page = "Home page")
-<p>{{username.username}}</p>
+<p>{{account.username}}</p>
 
 
 <form action="/new_album/" method="POST">
@@ -23,8 +23,8 @@
 </form>
 <br>
 
-%for album in username.albums:
-<form action="/album/{{album.name}}" method="GET">
+%for album in account.albums:
+<form action="/album/{{album.name}}" method="POST">
     <div class="field is-grouped">
         <div class="control">
             <button class="button is-link">{{album.name}}</button>
@@ -34,7 +34,7 @@
 %end
 
 
-%for image in username.images:
+%for image in account.images:
 <div>
 <img src= "{{ get_url('database', filename= image) }}" class="img-fluid" />
 </div>

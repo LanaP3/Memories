@@ -25,7 +25,7 @@ def username_available(data, username):
     return username not in data
 
 
-def find_user(data, username, password):
+def find_account(data, username, password):
     for user in data:
         if username == user:
             if password == data[user]["password"]:
@@ -47,6 +47,12 @@ class User:
         self.images = data[username]["images"]
         self.albums = [Album(album, username) for album in data[username]["albums"]]
 
+    def to_json(self):
+        data = read_json()
+        data[self.username]["password"] = self.password
+        data[self.username]["images"] = self.images
+        data[self.username]["albums"] = self.albums
+
     def correct_password(self, text):
         return self.password == text
 
@@ -58,6 +64,7 @@ class User:
         data[username]["images"] = []
         data[username]["albums"] = {}
         write_json(data)
+
 
     def album_available(self, album_name):
         data = read_json()
@@ -146,6 +153,13 @@ class Album:
         self.access = [owner]
         self.images = {}
 
+    def to_json(self):
+        data = read_json()
+        data[self.owner.username]["albums"][self.name]["owner"] = self.owner
+        data[self.owner.username]["albums"][self.name]["date_added"] = self.date_added
+        data[self.owner.username]["albums"][self.name]["access"] = self.access
+        data[self.owner.username]["albums"][self.name]["images"] = self.images
+
     def delete(self, user):
         if user == self.owner:
             data = read_json()
@@ -163,9 +177,10 @@ class Album:
         write_json(data)
 
     def change_access(self, user, friend): 
-        if user == self.owner:
+        if user.username == self.owner:
             data = read_json()
             data[self.owner][self.owner.albums][self.name]["access"].append(friend)
+            #data[friend.username][friend.albums][self.name]#append(friend)
             write_json(data)
         else:
             pass

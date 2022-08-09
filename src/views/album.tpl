@@ -1,9 +1,11 @@
 % rebase('base.tpl', current_page=album.name)
-<p>{{username.username}}</p>
+<p>{{account.username}}</p>
 
 <p>
 {{album.name}}
 </p>
+
+%if account.username==album.owner.username:
 <form action="/add_friend/" method="POST">
     <div class="field">
         <div class="control has-icons-left">
@@ -18,10 +20,11 @@
             <button class="button is-link">add friend</button>
         </div>
     </div>
-%if friend:
-<p class="help is-danger">{{friend}} has been added to the album.</p>
+%if error:
+<p class="help is-danger">{{error}}</p>
 %end
 </form>
+%end
 
 %for image in album.images:
 <form action="/image/" method="get">
