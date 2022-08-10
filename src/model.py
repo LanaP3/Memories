@@ -20,17 +20,6 @@ def write_json(data):
         json.dump(data, outfile, ensure_ascii=False, indent=4)
 
 
-
-def username_available(data, username):
-    return username not in data
-
-
-def find_account(data, username, password):
-    for user in data:
-        if username == user:
-            if password == data[user]["password"]:
-                return user
-
 def set_image_size(image_path, basewidth):
     img = Image.open(image_path)
     wpercent = (basewidth/float(img.size[0]))
@@ -45,16 +34,30 @@ class User:
         self.username = username
         self.password = data[username]["password"]
         self.images = data[username]["images"]
-        self.albums = [Album(album, username) for album in data[username]["albums"]]
+        self.albums = data[self.username]["albums"] #slovar albumov... [Album(album_id) for album_id in data[username]["albums"]]
 
     def to_json(self):
         data = read_json()
         data[self.username]["password"] = self.password
         data[self.username]["images"] = self.images
         data[self.username]["albums"] = self.albums
+        write_json(data)
 
     def correct_password(self, text):
         return self.password == text
+    
+    @staticmethod
+    def find_account(username, password):
+        data = read_json()
+        for name in data:
+            if username == name:
+                if password == data[name]["password"]:
+                    return name
+
+    @staticmethod    
+    def username_available(data, username):
+        data = read_json()
+        return username not in data
 
     @staticmethod
     def register(username, password):
@@ -66,20 +69,20 @@ class User:
         write_json(data)
 
 
-    def album_available(self, album_name):
+    def album_available(self, album_id):
         data = read_json()
-        return album_name not in data[self.username]["albums"]        
+        return album_id not in data[self.username]["albums"]        
 
     def new_album(self, album_name):
         if self.album_available(album_name):
-            new_album = Album(album_name, self.username)
-            data = read_json()
-            data[self.username]["albums"][album_name] = {}
-            data[self.username]["albums"][album_name]["owner"] = new_album.owner
-            data[self.username]["albums"][album_name]["access"] = new_album.access
-            data[self.username]["albums"][album_name]["date_added"] = new_album.date_added
-            data[self.username]["albums"][album_name]["images"] = new_album.images
-            write_json(data)
+            self.albums[f"album_name.{self.username}"] = {
+                "name": album_name,
+                "owner": self.username,
+                "date_added": str(datetime.date.today()),
+                "access": [self.username],
+                "images": {}
+                }
+            self.to_json()
     
     def new_image(self, upload):
         name, ext = os.path.splitext(upload.filename)
@@ -98,95 +101,131 @@ class User:
         data[self.username]["images"].append(image_id)
         write_json(data)
     
-    def get_albums(self):
+    def get_albums_id(self):
         data = read_json()
-        return data[self.username]["albums"]
-
-
-@dataclass
-class Picture:
-    date_added: date
-    owner: User
-    name: str
-    likes: int
-    dislikes: int
-    comments: list
+        return list(data[self.username]["albums"])
     
-    def delete(self, album, user):
-        if user == self.owner:
-            data = read_json()
-            del data[self.owner][self.owner.albums]["album"]["images"][self.name]
-            write_json(data)
-        else:
-            pass
+    def get_albums(self):
+        list_of_albums=[]
+        for album_id in self.get_albums_id():
+            list_of_albums.append(Album(album_id))
+        return list_of_albums
 
-    def download(self):
-        pass
+    def find_album_id(self, album_name):
+        for album_id in self.get_albums_id():
+            if album_name == Album(album_id).name:
+                return album_id
+        return False
 
-    def add_comment(self, album, comment):
-        data = read_json()
-        data[self.owner]["albums"][album.name]["images"][self.name]["comments"].append(comment)
-        write_json(data)
 
-    def like(self,album):
-        data = read_json()
-        data[self.owner]["albums"][album.name]["images"][self.name]["likes"] += 1
-        write_json(data)
-
-    def dislike(self,album):
-        data = read_json()
-        data[self.owner]["albums"][album.name]["images"][self.name]["dislikes"] += 1
-        write_json(data)
-
-    #def rating(self):
-    #    if self.likes+self.dislikes == 0:
-    #        return None
-    #    else:
-    #        return ((self.likes-self.dislikes)/(self.likes+self.dislikes) * 5) + 5
-
-@dataclass
 class Album:
-    def __init__(self, name, owner):
-        self.name = name
-        self.owner = owner
-        self.date_added = str(datetime.date.today())
-        self.access = [owner]
-        self.images = {}
+    def __init__(self, album_id):
+        data = read_json()
+        self.id = album_id #oblike 'name.owner'
+        self.name = album_id.split(".")[0]
+        self.owner = album_id.split(".")[1]
+        self.date_added = data[self.owner]["albums"][album_id]["date_added"]
+        self.access = data[self.owner]["albums"][album_id]["access"]
+        self.images = data[self.owner]["albums"][album_id]["images"]
 
     def to_json(self):
         data = read_json()
-        data[self.owner.username]["albums"][self.name]["owner"] = self.owner
-        data[self.owner.username]["albums"][self.name]["date_added"] = self.date_added
-        data[self.owner.username]["albums"][self.name]["access"] = self.access
-        data[self.owner.username]["albums"][self.name]["images"] = self.images
+        for name in self.access:
+            data[name]["albums"][self.id]["name"] = self.name
+            data[name]["albums"][self.id]["owner"] = self.owner
+            data[name]["albums"][self.id]["date_added"] = self.date_added
+            data[name]["albums"][self.id]["access"] = self.access
+            data[name]["albums"][self.id]["images"] = self.images
+        write_json(data)
 
-    def delete(self, user):
-        if user == self.owner:
+#v tpl naj se moznost izbrisa pokaze samo ownerju
+    def delete(self, username):
+        if username == self.owner:
             data = read_json()
-            del data[self.owner][self.owner.albums][self.name]
-            write_json(data) 
-        else:
-            pass
+            for name in self.access:
+                del data[name]["albums"][self.id]
+            write_json(data)
 
     def download(self):
         pass
 
-    def add_image(self, image):
-        data = read_json()
-        data[self.owner][self.owner.albums][self.name]["images"].append(image)
-        write_json(data)
+    def add_image(self, image_id):
+        if image_id not in list(self.images):
+            image_name = image_id.rsplit(sep=".", maxsplit=2)[2]
+            self.images[image_id] = {
+                "album_owner": self.owner,
+                "name": image_name,
+                "likes": 0,
+                "dislikes": 0,
+                "comments": []
+                }
+        self.to_json()
 
     def change_access(self, friend_name):
         data = read_json()
-        data[self.owner.username]["albums"][self.name]["access"].append(friend_name)
-        data[friend_name]["albums"][self.name] = {}
-        data[friend_name]["albums"][self.name]["owner"] = self.owner.username
-        data[friend_name]["albums"][self.name]["access"] = self.access
-        data[friend_name]["albums"][self.name]["date_added"] = self.date_added
-        data[friend_name]["albums"][self.name]["images"] = self.images
-        write_json(data)
+        if friend_name in data:
+            if friend_name not in self.access:
+                self.access.append(friend_name)
+                friend = User(friend_name)
+                friend.albums[self.id]={}
+                friend.to_json()
+                self.to_json()
+                return False
+        return True
 
 
+class Picture:
+    def __init__(self, image_id, album_id):
+        data = read_json()
+        album = Album(album_id)
+        self.id = image_id #oblike 'name.owner.ext'
+        self.album_owner = album.owner
+        self.album_id = album_id
+        self.name = image_id.rsplit(sep=".", maxsplit=2)[2] #lahko so v imenu slike '.'
+        self.likes = data[self.album_owner]["albums"][album_id]["images"][image_id]["likes"]
+        self.dislikes = data[self.album_owner]["albums"][album_id]["images"][image_id]["dislikes"]
+        self.comments = data[self.album_owner]["albums"][album_id]["images"][image_id]["dislikes"]
+    
+    def to_json(self):
+        album = Album(self.album_id)
+        album["images"][self.id]["owner"] = self.owner
+        album["images"][self.id]["name"] = self.name
+        album["images"][self.id]["likes"] = self.likes
+        album["images"][self.id]["dislikes"] = self.dislikes
+        album["images"][self.id]["comments"] = self.comments
+        album.to_json()
 
-
+#    def delete(self, album, user):
+#        if user == self.owner:
+#            data = read_json()
+#            del data[self.owner][self.owner.albums]["album"]["images"][self.name]
+#            write_json(data)
+#        else:
+#            pass
+#
+#    def download(self):
+#        pass
+#
+#    def add_comment(self, album, comment):
+#        data = read_json()
+#        data[self.owner]["albums"][album.id]["images"][self.name]["comments"].append(comment)
+#        write_json(data)
+#
+#    def like(self,album):
+#        data = read_json()
+#        data[self.owner]["albums"][album.id]["images"][self.name]["likes"] += 1
+#        write_json(data)
+#
+#    def dislike(self,album):
+#        data = read_json()
+#        data[self.owner]["albums"][album.id]["images"][self.name]["dislikes"] += 1
+#        write_json(data)
+#
+#    #def rating(self):
+#    #    if self.likes+self.dislikes == 0:
+#    #        return None
+#    #    else:
+#    #        return ((self.likes-self.dislikes)/(self.likes+self.dislikes) * 5) + 5
+#
+#
 

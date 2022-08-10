@@ -1,5 +1,4 @@
 % rebase('base.tpl', "current_page"={{image}})
-<p>{{account.username}}</p>
 
 <form action="/main_page/" method="get">
     <input name = main_page value="main page" type="submit" class="btn btn-outline-primary"/>

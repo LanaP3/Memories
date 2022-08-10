@@ -1,11 +1,10 @@
 % rebase('base.tpl', current_page=album.name)
-<p>{{account.username}}</p>
 
 <p>
 {{album.name}}
 </p>
 
-%if account.username==album.owner.username:
+%if account.username==album.owner:
 <form action="/add_friend/" method="POST">
     <div class="field">
         <div class="control has-icons-left">

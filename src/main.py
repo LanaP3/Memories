@@ -5,6 +5,7 @@ import sys
 from bottle import get, post, request
 from datetime import datetime
 from model import *
+#te pripise, errorje bi lahko dala da se vsi na istem mestu vedno izpisejo, npr. okvircek desno zgoraj
 
 path_to_code = os.path.join(os.getcwd(),'..', "database", "secret.txt")
 with open(path_to_code, "r") as d:
@@ -21,10 +22,10 @@ def current_account():
         return User(username)        
 
 def current_album():
-    album_name = bottle.request.get_cookie("album", secret=CODE)
+    album_id = bottle.request.get_cookie("album", secret=CODE)
     account = current_account()
-    if album_name:
-        return Album(album_name, account)
+    if album_id:
+        return Album(album_id)
 
 def current_image():
     image = bottle.request.get_cookie("image", secret=CODE)
@@ -47,8 +48,7 @@ def do_login():
     username = bottle.request.forms.getunicode("username")
     password = bottle.request.forms.getunicode("password")
     if username and password:
-        data = read_json()
-        if find_account(data, username, password):
+        if User.find_account(username, password):
             bottle.response.set_cookie("account", username, path="/", secret=CODE)
             bottle.redirect("/")
         else:
@@ -61,8 +61,7 @@ def register():
     username = bottle.request.forms.getunicode("username")
     password = bottle.request.forms.getunicode("password")
     if username and password:
-        data = read_json()
-        if username_available(data, username):
+        if User.username_available(username):
             User.register(username, password)
             bottle.response.set_cookie("account", username, path="/", secret=CODE)
             bottle.redirect("/")
@@ -78,28 +77,41 @@ def memories():
 @bottle.get("/main_page/")
 def main_page():
     account = current_account()
+    list_of_albums = account.get_albums()
     bottle.response.delete_cookie("album", path="/")
-    return bottle.template("main_page.tpl", account=account)
+    return bottle.template("main_page.tpl", account=account, list_of_albums=list_of_albums)
+
+@bottle.post("/upload_image/")
+def upload_image():
+    account = current_account()
+    upload = bottle.request.files.get('upload')
+    account.new_image(upload)
+    bottle.redirect("/main_page/")
 
 @bottle.post("/new_album/")
 def create_new_album():
     account = current_account()
-    album_name = bottle.request.forms.getunicode("new_album")
-    if album_name:
-        account.new_album(album_name)
+    album_id = bottle.request.forms.getunicode("new_album")
+    if album_id:
+        account.new_album(album_id)
     bottle.redirect("/main_page/")
-    
-@bottle.post("/add_to_album/")
-def add_to_album(image):
+
+#naredi isto kot pri vstopu v album, mogoce se en pripis da se pokaze?
+# samo ce je username==album.owner   
+@bottle.post("/add_to_album/<image_id>")
+def add_to_album(image_id):
     account = current_account()
     album_name = bottle.request.forms.getunicode("album_name")
-    if album_name in account.albums:
-        album_name.add_image(image) #kera slika??
+    album_id = account.find_album_id(album_name)
+    if album_id:
+        Album(album_id).add_image(image_id)
     bottle.redirect("/main_page/") #izpis "**IMAGE** has been added to **ALBUM**"
 
 @bottle.post("/album/<album_name>")
 def enter_album(album_name):
-    bottle.response.set_cookie("album", album_name, path="/", secret=CODE)
+    account = current_account()
+    album_id = account.find_album_id(album_name)
+    bottle.response.set_cookie("album", album_id, path="/", secret=CODE)
     bottle.redirect("/album/")
 
 @bottle.get("/album/")
@@ -110,23 +122,18 @@ def albums(error=None):
 
 @bottle.post("/add_friend/")
 def add_friend():
-    account = current_account()
     album = current_album()
     friend_name = bottle.request.forms.getunicode("friend")
-    data = read_json()
-    error = None
-    if account.username == album.owner.username:
-        if friend_name in data:
-            if friend_name not in album.access:
-                error = f"Your friend {friend_name} has been added to album."
-                album.change_access(friend_name)
-    if error == None:
-        error = "Please enter your friends username."  
+    error = album.change_access(friend_name)
+    if error:
+        error = "Please enter your friends username."
+    else:
+        error = f"Your friend {friend_name} has been added to album."
     return albums(error)                              
 
 
 @bottle.get("/image/")
-def image():
+def enter_image():
     account = current_account()
     album = current_album()
     image = current_image()

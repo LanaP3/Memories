@@ -30,8 +30,9 @@
         <div class="navbar-start">
           % if defined("current_page"):
             <form method="POST" action="/log_out/">
-                <button class="button is-light">
-                  Log out
+                <button class="is-small is-rounded">
+                  ({{account.username}})<br />
+                  <p>Log out</p>
                 </button>
               </form>
             </form>

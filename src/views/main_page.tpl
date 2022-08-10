@@ -1,5 +1,4 @@
 % rebase('base.tpl', current_page = "Home page")
-<p>{{account.username}}</p>
 
 
 <form action="/new_album/" method="POST">
@@ -17,13 +16,13 @@
     </div>
 </form>
 <br>
-<form action="/main_page/", method="POST", enctype="multipart/form-data">
+<form action="/upload_image/", method="POST", enctype="multipart/form-data">
     Upload new photo: <input type="file" name="upload" />
     <input class="form-control" type="submit" value="upload" />
 </form>
 <br>
 
-%for album in account.albums:
+%for album in list_of_albums:
 %if album.owner == account.username:
 <form action="/album/{{album.name}}" method="POST">
     <div class="field is-grouped">
@@ -32,9 +31,12 @@
         </div>
     </div>
 </form>
-%else:
+%end
+%end
+
 <strong>Friends' albums:</strong>
-<p>"{{album.owner}}'s album:"</p>
+%for album in list_of_albums:
+%if album.owner != account.username:
 <form action="/album/{{album.name}}" method="POST">
     <div class="field is-grouped">
         <div class="control">
@@ -46,11 +48,14 @@
 %end
 
 
-%for image in account.images:
+%if account.images:
+<strong>Your images:</strong>
+%end
+%for image_id in account.images:
 <div>
-<img src= "{{ get_url('database', filename= image) }}" class="img-fluid" />
+<img src= "{{ get_url('database', filename= image_id) }}" class="img-fluid" />
 </div>
-<form action="/add_to_album/", method="POST">
+<form action="/add_to_album/{{image_id}}", method="POST">
     <div class="field">
         <div class="control has-icons-left">
             <input class="input" name="album_name" type="text" placeholder="album's name">
