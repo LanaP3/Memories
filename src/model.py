@@ -146,16 +146,17 @@ class Album:
             data[name]["albums"][self.id]["images"] = self.images
         write_json(data)
 
-#v tpl naj se moznost izbrisa pokaze samo ownerju
-    def delete(self, username):
-        if username == self.owner:
-            data = read_json()
-            for name in self.access:
-                del data[name]["albums"][self.id]
-            write_json(data)
+    def delete_album(self):
+        data = read_json()
+        for name in self.access:
+            del data[name]["albums"][self.id]
+        write_json(data)
 
-    def download(self):
-        pass
+    def leave_album(self, account):
+        self.access.remove(account.username)
+        self.to_json()
+        del account.albums[self.id]
+        account.to_json()
 
     def add_image(self, image_id):
         if image_id not in list(self.images):

@@ -115,6 +115,7 @@ def add_to_album(image_id):
 
 @bottle.post("/album/<album_id>")
 def enter_album(album_id):
+    bottle.response.delete_cookie("image", path="/")
     bottle.response.set_cookie("album", album_id, path="/", secret=CODE)
     bottle.redirect("/album/")
 
@@ -135,7 +136,17 @@ def add_friend():
         error = "Please enter your friends username."
     else:
         error = f"Your friend {friend_name} has been added to album."
-    return albums(error)                              
+    return albums(error)
+
+@bottle.post("/remove_album/")
+def remove_album():
+    account = current_account()
+    album = current_album()
+    if account.username == album.owner:
+        album.delete_album()
+    else:
+        album.leave_album(account)
+    bottle.redirect("/main_page/")                              
 
 @bottle.post("/image/<image_id>")
 def enter_image(image_id):

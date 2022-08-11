@@ -22,7 +22,7 @@
     <input class="form-control" type="submit" value="upload" />
 </form>
 <br>
-% if list_of_albums != []:
+% if len(list_of_albums)-account.num_friends_albums()!= 0:
 <b>Your albums:</b>
 % for album in list_of_albums:
 % if album.owner == account.username:

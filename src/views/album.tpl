@@ -1,6 +1,21 @@
 % rebase('base.tpl', current_page = album.name)
 
 
+<form action="/remove_album/" method="POST">
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-link">
+            <i class="fa-solid fa-trash"></i>
+            % if account.username==album.owner:
+            <sub>DELETE ALBUM</sub>
+            % else:
+            <sub>LEAVE ALBUM</sub>
+            % end
+            </button>
+        </div>
+    </div>
+</form>
+
 
 <div>
 <b>ALBUM NAME:</b>  {{album.name}}<br/>
