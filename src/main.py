@@ -6,6 +6,7 @@ from bottle import get, post, request
 from datetime import datetime
 from model import *
 #te pripise, errorje bi lahko dala da se vsi na istem mestu vedno izpisejo, npr. okvircek desno zgoraj
+#dodaj ikonce
 
 path_to_code = os.path.join(os.getcwd(),'..', "database", "secret.txt")
 with open(path_to_code, "r") as d:
@@ -23,14 +24,17 @@ def current_account():
 
 def current_album():
     album_id = bottle.request.get_cookie("album", secret=CODE)
-    account = current_account()
     if album_id:
         return Album(album_id)
+    else:
+        bottle.redirect("/main_page/")
 
 def current_image():
-    image = bottle.request.get_cookie("image", secret=CODE)
-    if image:
-        pass
+    image_id = bottle.request.get_cookie("image", secret=CODE)
+    album = current_album()
+    album_id = album.id
+    if image_id:
+        return Picture(image_id, album_id)
     else:
         bottle.redirect("/album/")
 
@@ -79,6 +83,7 @@ def main_page():
     account = current_account()
     list_of_albums = account.get_albums()
     bottle.response.delete_cookie("album", path="/")
+    bottle.response.delete_cookie("image", path="/")
     return bottle.template("main_page.tpl", account=account, list_of_albums=list_of_albums)
 
 @bottle.post("/upload_image/")
@@ -102,15 +107,14 @@ def create_new_album():
 def add_to_album(image_id):
     account = current_account()
     album_name = bottle.request.forms.getunicode("album_name")
-    album_id = account.find_album_id(album_name)
+    album_owner = bottle.request.forms.getunicode("album_owner")
+    album_id = album_name+"."+album_owner
     if album_id:
         Album(album_id).add_image(image_id)
     bottle.redirect("/main_page/") #izpis "**IMAGE** has been added to **ALBUM**"
 
-@bottle.post("/album/<album_name>")
-def enter_album(album_name):
-    account = current_account()
-    album_id = account.find_album_id(album_name)
+@bottle.post("/album/<album_id>")
+def enter_album(album_id):
     bottle.response.set_cookie("album", album_id, path="/", secret=CODE)
     bottle.redirect("/album/")
 
@@ -118,7 +122,9 @@ def enter_album(album_name):
 def albums(error=None):
     account = current_account()
     album = current_album()
-    return bottle.template("album.tpl", error=error, account=account, album=album)
+    str_of_people = album.access_str()
+    bottle.response.delete_cookie("image", path="/")
+    return bottle.template("album.tpl", error=error, account=account, album=album, str_of_people = str_of_people)
 
 @bottle.post("/add_friend/")
 def add_friend():
@@ -131,18 +137,45 @@ def add_friend():
         error = f"Your friend {friend_name} has been added to album."
     return albums(error)                              
 
+@bottle.post("/image/<image_id>")
+def enter_image(image_id):
+    bottle.response.set_cookie("image", image_id, path="/", secret=CODE)
+    bottle.redirect("/image/")
 
 @bottle.get("/image/")
-def enter_image():
+def images():
     account = current_account()
-    album = current_album()
     image = current_image()
+    return bottle.template("image.tpl", account=account, image=image)
+
+@bottle.post("/like/")
+def like_image():
+    account = current_account()
+    image = current_image()
+    image.like(account)
+    bottle.redirect("/image/")
+
+@bottle.post("/dislike/")
+def dislike_image():
+    account = current_account()
+    image = current_image()
+    image.dislike(account)
+    bottle.redirect("/image/")
+
+@bottle.post("/add_comment/")
+def add_comment():
+    account = current_account()
+    image = current_image()
+    text = bottle.request.forms.getunicode("comment")
+    image.add_comment(account, text)
+    bottle.redirect("/image/")
 
 
 @bottle.post("/log_out/")
 def log_out():
     bottle.response.delete_cookie("account", path="/")
     bottle.response.delete_cookie("album", path="/")
+    bottle.response.delete_cookie("image", path="/")
     bottle.redirect("/")
 
 

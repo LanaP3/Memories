@@ -9,7 +9,7 @@
     <title>Memories</title>
     % end
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://kit.fontawesome.com/2f90d8839a.js" crossorigin="anonymous"></script>
   </head>
   
   <body>
@@ -18,31 +18,33 @@
         <div class="navbar-brand">
           <span class="navbar-item">
             <span class="icon">
-              <i class="fa fa-camera-retro" aria-hidden="true"></i>
+              <i class="fa-solid fa-camera-retro"></i>
             </span>
-            
             <strong>Memories</strong>
-            % if defined("current_page"): 
-            <p>{{current_page}}</p>
-            % end
           </span>
         </div>
         <div class="navbar-start">
           % if defined("current_page"):
             <form method="POST" action="/log_out/">
-                <button class="is-small is-rounded">
-                  ({{account.username}})<br />
-                  <p>Log out</p>
+                <button class="is-small is-rounded">                  
+                  <b>Log out</b><br/>
+                  <small>{{account.username}}</small>
                 </button>
               </form>
             </form>
             % if current_page != "Home page":
             <a class="navbar-item" href="/main_page/">
               <span class="icon">
-                <i class="fa fa-home" aria-hidden="true"></i>
+                <i class="fa-solid fa-house-chimney"></i>
               </span>
             % end
-          % end
+            % if current_page == "image":
+            <a class="navbar-item" href="/album/">
+              <span class="icon">
+                <i class="fa-regular fa-circle-left"></i>
+              </span>
+            % end
+            % end
         </div>
         <div class="navbar-end">
           </div>

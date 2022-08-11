@@ -1,22 +1,42 @@
-% rebase('base.tpl', "current_page"={{image}})
+% rebase('base.tpl', current_page = "image")
 
-<form action="/main_page/" method="get">
-    <input name = main_page value="main page" type="submit" class="btn btn-outline-primary"/>
-</form>
-<p>
+<div>
+<img src= "{{ get_url('database', filename= image.id) }}" class="img-fluid" />
+</div>
+<div>
+{{image.name}}
+</div>
+<div>
+    <form action="/like/" method="POST">
+    {{len(image.likes)}}
+    <button class="icon">
+      <i class="fa-regular fa-heart"></i>
+    </button>
+    </form>
+    <form action="/dislike/" method="POST">
+    {{len(image.dislikes)}}
+    <button class="icon">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    </form>
+</div>
 
-{{image}}
-<form action="/album/" method="POST">
-<b>{{likes}} </b>  <input name = "like" value= "like" type="submit" class="btn btn-danger btn-sm">
-<b>{{dislikes}} </b>  <input name = "dislike" value= "dislike" type="submit" class="btn btn-danger btn-sm">
-</form>
+%if len(image.comments) != 0:
+<strong>Comments:</strong>
+<div>
+%for comment in image.comments:
+<p>~“{{comment[1]}}”</i>   <sub>-{{comment[0]}}</sub>
+%end
+</p>
+</div>
+%end
 
-<form action="/album/" method="POST">
+<form action="/add_comment/" method="POST">
     <div class="field">
         <div class="control has-icons-left">
             <input class="input" name="comment" type="text" placeholder="comment">
             <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
+                <i class="fa fa-pencil"></i>
             </span>
         </div>
     </div>
@@ -26,5 +46,4 @@
         </div>
     </div>
 </form>
-%end
-</p>
+

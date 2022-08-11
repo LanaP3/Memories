@@ -17,41 +17,48 @@
 </form>
 <br>
 <form action="/upload_image/", method="POST", enctype="multipart/form-data">
-    Upload new photo: <input type="file" name="upload" />
+    <b>Upload new photo:</b> <br/>
+    <input type="file" name="upload" />
     <input class="form-control" type="submit" value="upload" />
 </form>
 <br>
-
-%for album in list_of_albums:
-%if album.owner == account.username:
-<form action="/album/{{album.name}}" method="POST">
+% if list_of_albums != []:
+<b>Your albums:</b>
+% for album in list_of_albums:
+% if album.owner == account.username:
+% album_id = album.name+"."+album.owner
+<form action="/album/{{album_id}}" method="POST">
     <div class="field is-grouped">
         <div class="control">
             <button class="button is-link">{{album.name}}</button>
         </div>
     </div>
 </form>
-%end
-%end
+% end
+% end
+% end
 
-<strong>Friends' albums:</strong>
-%for album in list_of_albums:
-%if album.owner != account.username:
-<form action="/album/{{album.name}}" method="POST">
+% if account.num_friends_albums() != 0:
+<b>Friends' albums:</b>
+% end
+% for album in list_of_albums:
+% if album.owner != account.username:
+% album_id = album.name+"."+album.owner
+<form action="/album/{{album_id}}" method="POST">
     <div class="field is-grouped">
         <div class="control">
             <button class="button is-link">{{album.name}}</button>
         </div>
     </div>
 </form>
-%end
-%end
+% end
+% end
 
 
-%if account.images:
+% if account.images:
 <strong>Your images:</strong>
-%end
-%for image_id in account.images:
+% end
+% for image_id in account.images:
 <div>
 <img src= "{{ get_url('database', filename= image_id) }}" class="img-fluid" />
 </div>
@@ -60,7 +67,15 @@
         <div class="control has-icons-left">
             <input class="input" name="album_name" type="text" placeholder="album's name">
             <span class="icon is-small is-left">
-                <i class="fa fa-book" aria-hidden="true"></i>
+                <i class="fa fa-book"></i>
+            </span>
+        </div>
+    </div>
+    <div class="field">
+        <div class="control has-icons-left">
+            <input class="input" name="album_owner" type="text" placeholder="album's creator">
+            <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
             </span>
         </div>
     </div>
@@ -70,5 +85,5 @@
         </div>
     </div>
 </form>
-%end
+% end
 

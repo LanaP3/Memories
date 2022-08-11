@@ -1,10 +1,15 @@
-% rebase('base.tpl', current_page=album.name)
+% rebase('base.tpl', current_page = album.name)
 
-<p>
-{{album.name}}
-</p>
 
-%if account.username==album.owner:
+
+<div>
+<b>ALBUM NAME:</b>  {{album.name}}<br/>
+<b>CREATOR:</b>  {{album.owner}}<br/>
+<b>DATE:</b>  {{album.date_added}}<br/>
+<b>PEOPLE:</b>  {{str_of_people}}
+</div>
+
+% if account.username==album.owner:
 <form action="/add_friend/" method="POST">
     <div class="field">
         <div class="control has-icons-left">
@@ -19,17 +24,23 @@
             <button class="button is-link">add friend</button>
         </div>
     </div>
-%if error:
+% if error:
 <p class="help is-danger">{{error}}</p>
-%end
+% end
 </form>
-%end
+% end
 
-%for image in album.images:
-<form action="/image/" method="get">
+% for image_id in list(album.images):
+<div>
+<img src= "{{ get_url('database', filename= image_id) }}" class="img-fluid" />
+</div>
+<form action="/image/{{image_id}}" method="POST">
     <div class="field is-grouped">
         <div class="control">
-            <button class="button is-link">image</button>
+            <button class="button is-link">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
         </div>
     </div>
 </form>
+% end
