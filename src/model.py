@@ -27,6 +27,10 @@ def set_image_size(image_path, basewidth):
     img = img.resize((basewidth,hsize), Image.ANTIALIAS)
     img.save(image_path)
 
+def check_grammar(word):
+    if re.match("^[A-Za-z0-9_%+,*#-]*$", word): 
+        return word
+    return False
 
 class User:
     def __init__(self, username):
@@ -92,7 +96,7 @@ class User:
             return "Please only use '.jpeg', '.jpg' or '.png' file extensions."
         with open(save_path, "wb") as image_file:
             image_file.write(upload.file.read())
-        set_image_size(save_path, 200)
+        set_image_size(save_path, 300)
         
         data = read_json()
         if image_id in data[self.username]["images"]:    #image already saved

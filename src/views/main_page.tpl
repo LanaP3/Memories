@@ -1,6 +1,8 @@
-% rebase('base.tpl', current_page = "Home page")
+% rebase('base.tpl', current_page = "Home page", note = note)
 
-
+% if error:
+<p class="help is-danger">{{error}}</p>
+% end
 <form action="/new_album/" method="POST">
     <div class="field">
         <label class="label">Create new album:</label>
@@ -15,6 +17,7 @@
         </div>
     </div>
 </form>
+
 <br>
 <form action="/upload_image/", method="POST", enctype="multipart/form-data">
     <b>Upload new photo:</b> <br/>
@@ -59,6 +62,7 @@
 <strong>Your images:</strong>
 % end
 % for image_id in account.images:
+
 <div>
 <img src= "{{ get_url('database', filename= image_id) }}" class="img-fluid" />
 </div>

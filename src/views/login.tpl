@@ -1,4 +1,4 @@
-% rebase('base.tpl')
+% rebase('base.tpl', note = note)
 
 <form action="/log_in/", method="POST">
     <div class="field">
@@ -19,16 +19,18 @@
             </span>
         </div>
     </div>
+    
     <div class="field is-grouped">
         <div class="control">
             <button class="button is-link">Login</button>
         </div>
     </div>
 </form>
+
 % if error:
 <p class="help is-danger">{{error}}</p>
 % end
-<p>New user?</p>
+<p>FOR NEW USERS:</p>
 <form action="/register/", method="POST">
     <div class="field">
         <label class="label">Username</label>

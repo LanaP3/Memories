@@ -8,7 +8,7 @@
     % else:
     <title>Memories</title>
     % end
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
     <script src="https://kit.fontawesome.com/2f90d8839a.js" crossorigin="anonymous"></script>
   </head>
   
@@ -58,7 +58,12 @@
       </div>
     </nav>
 
-    <section class="section">
+    <section class="section is-dark">
+    % if "note":
+    <div class="content">
+			<div class="subtitle is-size-6">{{note}}</div>
+    </div>
+    % end
       {{!base}}
     </section>
 

@@ -1,4 +1,4 @@
-% rebase('base.tpl', current_page = album.name)
+% rebase('base.tpl', current_page = album.name, error = error)
 
 
 <form action="/remove_album/" method="POST">
