@@ -58,12 +58,19 @@
       </div>
     </nav>
 
-    <section class="section is-dark">
-    % if "note":
-    <div class="content">
-			<div class="subtitle is-size-6">{{note}}</div>
+    
+    <div class="notification is-info is-light">
+      % if "note":
+      <p>{{note}}</p>
+      % end
+      % if "error":
+      <p style="color:red; font-size:small">
+      {{error}}
+      </p>
+      % end
     </div>
-    % end
+    
+    <section class="section">
       {{!base}}
     </section>
 

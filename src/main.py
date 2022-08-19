@@ -7,6 +7,10 @@ from datetime import datetime
 from model import *
 #te pripise, errorje bi lahko dala da se vsi na istem mestu vedno izpisejo, npr. okvircek desno zgoraj
 #dodaj ikonce
+#drop-down seznam za izbiro albuma in creatorja
+#lepsa forma za uploadanje slik
+#da vstopis v sliko kar s klikom nanjo
+#komentarje, izpisejo se v vsakem primeru, ce jih se ni, nekaj v smislu: "no comments yet"
 
 path_to_code = os.path.join(os.getcwd(),'..', "database", "secret.txt")
 with open(path_to_code, "r") as d:
@@ -99,7 +103,7 @@ def main_page(error=None):
         note = None
     elif note == "add_to_album_missing":
         error = "Enter album name as well as album creator."
-        note = "To which album do you want to add this image?"
+        note = "To which album do you want to add this photo?"
     elif note == "add_to_album_info":
         note = None
         error = "Album info is incorrect."
@@ -143,8 +147,11 @@ def add_to_album(image_id):
         if album_owner in data:
             album_id = album_name+"."+album_owner
             if album_id in User(album_owner).albums:
-                Album(album_id).add_image(image_id)
-                note = "Image has been added to your album."
+                if image_id in list(Album(album_id).images):
+                    note = "This photo is already in selected album. Do you want to add it to any of the other albums?"
+                else:
+                    Album(album_id).add_image(image_id)
+                    note = "You can now find this photo in your album."
     else:
         note = "add_to_album_missing"
     bottle.response.set_cookie("note", note, path="/", secret=CODE)
