@@ -13,7 +13,7 @@
                     </div>
                     <div class="control">
                         <button class="button is-link has-background-grey-light">
-                        Submit
+                            Submit
                         </button>
                     </div>
                 </div>
@@ -21,9 +21,25 @@
         </div>
         <div class="column">
             <form action="/upload_image/", method="POST", enctype="multipart/form-data">
-                <b>Upload new photo:</b> <br/>                
-                <input type="file" name="upload" />
-                <input class="form-control" type="submit" value="upload" />
+                <b>Upload new photo:</b> <br/>
+                <div class="file">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="upload">
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                                Choose a file…
+                            </span>
+                        </span>
+                    </label>
+                </div>
+                <div class="control">
+                    <button class="button is-link has-background-grey-light">
+                        Submit
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -78,31 +94,47 @@
     <div class="tile">
         <article class="tile is-child box">
             <img src= "{{ get_url('database', filename= image_id) }}" class="img-fluid" />
-            <form action="/add_to_album/{{image_id}}", method="POST">
+            
+            <form action="/add_to_album/{{image_id}}" method="POST">
                 <div class="field">
-                    <div class="control has-icons-left">
-                        <input class="input" name="album_name" type="text" placeholder="Album name">
-                        <span class="icon is-small is-left">
-                            <i class="fa fa-book"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="control has-icons-left">
-                        <input class="input" name="album_owner" type="text" placeholder="Album admin">
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-user"></i>
-                        </span>
-                    </div>
-                </div>
-                <div class="field is-grouped">
+                    <div class="control">
+                        <div class="select">
+                            <select name="album_id">
+                                <option value="">
+                                    Choose an album
+                                </option>
+                                % for album in list_of_albums:
+                                % if album.owner == account.username:
+                                <option value={{album.id}}>
+                                    {{album.name}}
+                                </option>
+                                % end
+                                % end
+                                % if account.num_friends_albums() != 0:
+
+                                % for album in list_of_albums:
+                                % if album.owner != account.username:
+                                <option value={{album.id}}>
+                                    {{album.name}} by {{album.owner}}
+                                </option>  
+                                % end
+                                % end
+                                % end
+                                </div>
+                            </select>
+                        </div>
+                    </div>   
+                </div>   
+                <div class="field has-addons">
                     <div class="control">
                         <button class="button is-link has-background-grey-lighter">
-                        Add to album
+                            Add to album
                         </button>
                     </div>
                 </div>
             </form>
+            
+
         </article>    
     </div> 
     % end

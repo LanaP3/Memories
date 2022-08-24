@@ -129,6 +129,13 @@ class User:
                 return album_id
         return False
 
+    def album_id_from_name_owner(self, str):
+        for album_id in self.albums:
+            album = Album(album_id)
+            if album.name in str:
+                if album.name + album.owner == str:
+                    return album_id
+        
 
 class Album:
     def __init__(self, album_id):
@@ -191,6 +198,7 @@ class Album:
         for name in self.access:
             s += f", {name}"
         return s[2:]
+
 
 class Picture:
     def __init__(self, image_id, album_id):

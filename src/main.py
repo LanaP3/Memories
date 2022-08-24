@@ -101,12 +101,6 @@ def main_page(error=None):
     if note == "new_album_error":
         error = "Please choose name for your new album. You may use numbers, lowercase and uppercase letters as well as symbols: _ % + * , # -"
         note = None
-    elif note == "add_to_album_missing":
-        error = "Enter album name as well as album creator."
-        note = "To which album do you want to add this photo?"
-    elif note == "add_to_album_info":
-        note = None
-        error = "Album info is incorrect."
     bottle.response.delete_cookie("album", path="/")
     bottle.response.delete_cookie("image", path="/")
     bottle.response.delete_cookie("note", path="/")
@@ -140,20 +134,16 @@ def create_new_album():
 def add_to_album(image_id):
     data = read_json()
     account = current_account()
-    album_name = check_grammar(bottle.request.forms.getunicode("album_name"))
-    album_owner = check_grammar(bottle.request.forms.getunicode("album_owner"))
-    if album_owner and album_name:
-        note = "add_to_album_info"
-        if album_owner in data:
-            album_id = album_name+"."+album_owner
-            if album_id in User(album_owner).albums:
-                if image_id in list(Album(album_id).images):
-                    note = "This photo is already in selected album. Do you want to add it to any of the other albums?"
-                else:
-                    Album(album_id).add_image(image_id)
-                    note = "You can now find this photo in your album."
+    album_id = bottle.request.forms.get("album_id")
+    if album_id == "":
+        note = "Please choose an album."
     else:
-        note = "add_to_album_missing"
+        album = Album(album_id)
+        if image_id in list(album.images):
+            note = "This photo is already in the selected album. Do you want to add it to any of the other albums?"
+        else:
+            album.add_image(image_id)
+            note = "You can now find this photo in your album."
     bottle.response.set_cookie("note", note, path="/", secret=CODE)
     bottle.redirect("/main_page/")
 
