@@ -1,8 +1,4 @@
-from dataclasses import dataclass
 import datetime
-from datetime import date
-from typing import List
-from PIL import Image, ImageFilter
 import os
 import json
 import re
@@ -81,7 +77,6 @@ class User:
         data[username]["albums"] = {}
         write_json(data)
 
-
     def album_available(self, album_id):
         data = read_json()
         return album_id not in data[self.username]["albums"]        
@@ -129,21 +124,6 @@ class User:
             if self.username != album.owner:
                 n+=1
         return n
-
-
-    def find_album_id(self, album_name):
-        for album_id in self.get_albums_id():
-            if album_name == Album(album_id).name:
-                return album_id
-        return False
-
-    def album_id_from_name_owner(self, str):
-        for album_id in self.albums:
-            album = Album(album_id)
-            if album.name in str:
-                if album.name + album.owner == str:
-                    return album_id
-        
 
 class Album:
     def __init__(self, album_id):

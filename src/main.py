@@ -1,13 +1,6 @@
-from attr import define
 import bottle
 import os
-import sys
-from bottle import get, post, request
-from datetime import datetime
 from model import *
-
-#dodaj ikonce
-#brisanje slik in dodajanje ikonc
 
 path_to_code = os.path.join(os.getcwd(),'..', "database", "secret.txt")
 with open(path_to_code, "r") as d:
@@ -138,8 +131,6 @@ def create_new_album():
 
 @bottle.post("/add_to_album/<image_id>")
 def add_to_album(image_id):
-    data = read_json()
-    account = current_account()
     album_id = bottle.request.forms.get("album_id")
     if album_id == "":
         note = "Please choose an album."
@@ -237,9 +228,9 @@ def add_comment():
     account = current_account()
     image = current_image()
     text = bottle.request.forms.getunicode("comment")
-    image.add_comment(account, text)
+    if text != "":
+        image.add_comment(account, text)
     bottle.redirect("/image/")
-
 
 @bottle.post("/log_out/")
 def log_out():
@@ -247,9 +238,5 @@ def log_out():
     bottle.response.delete_cookie("album", path="/")
     bottle.response.delete_cookie("image", path="/")
     bottle.redirect("/")
-
-
-
-
 
 bottle.run(reloader=True, debug=True)
