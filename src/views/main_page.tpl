@@ -12,7 +12,7 @@
                         </span>
                     </div>
                     <div class="control">
-                        <button class="button is-link has-background-grey-light">
+                        <button class="button is-link is-outlined">
                             Submit
                         </button>
                     </div>
@@ -36,7 +36,7 @@
                     </label>
                 </div>
                 <div class="control">
-                    <button class="button is-link has-background-grey-light">
+                    <button class="button is-link is-outlined">
                         Submit
                     </button>
                 </div>
@@ -89,54 +89,59 @@
 
 <section class="section has-background-white-bis">
     % if account.images:
+    % from model import sort_in_columns
     <strong>Your images:</strong>
-    % for image_id in account.images:
-    <div class="tile">
-        <article class="tile is-child box">
-            <img src= "{{ get_url('database', filename= image_id) }}" class="img-fluid" />
+    <div class="columns">
+        % for i in range(4):
+        % images = sort_in_columns(account.images,4,i)
+        <div class="column">
             
-            <form action="/add_to_album/{{image_id}}" method="POST">
-                <div class="field">
-                    <div class="control">
-                        <div class="select">
-                            <select name="album_id">
-                                <option value="">
-                                    Choose an album
-                                </option>
-                                % for album in list_of_albums:
-                                % if album.owner == account.username:
-                                <option value={{album.id}}>
-                                    {{album.name}}
-                                </option>
-                                % end
-                                % end
-                                % if account.num_friends_albums() != 0:
+            % for image_id in images:
+            <div class="box">
+                <img src= "{{ get_url('database', filename= image_id) }}" class="img-fluid" />
 
-                                % for album in list_of_albums:
-                                % if album.owner != account.username:
-                                <option value={{album.id}}>
-                                    {{album.name}} by {{album.owner}}
-                                </option>  
-                                % end
-                                % end
-                                % end
-                                </div>
-                            </select>
-                        </div>
+                <form action="/add_to_album/{{image_id}}" method="POST">
+                    <div class="field">
+                        <div class="control">
+                            <div class="select">
+                                <select name="album_id">
+                                    <option value="">
+                                        Choose an album
+                                    </option>
+                                    % for album in list_of_albums:
+                                    % if album.owner == account.username:
+                                    <option value={{album.id}}>
+                                        {{album.name}}
+                                    </option>
+                                    % end
+                                    % end
+                                    % if account.num_friends_albums() != 0:
+
+                                    % for album in list_of_albums:
+                                    % if album.owner != account.username:
+                                    <option value={{album.id}}>
+                                        {{album.name}} by {{album.owner}}
+                                    </option>  
+                                    % end
+                                    % end
+                                    % end
+                                    </div>
+                                </select>
+                            </div>
+                        </div>   
                     </div>   
-                </div>   
-                <div class="field has-addons">
-                    <div class="control">
-                        <button class="button is-link has-background-grey-lighter">
-                            Add to album
-                        </button>
+                    <div class="field has-addons">
+                        <div class="control">
+                            <button class="button is-link is-outlined">
+                                Add to album
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
-            
-
-        </article>    
+                </form>
+            </div>
+            % end
+        </div>    
+        % end  
     </div> 
-    % end
     % end
 </section>

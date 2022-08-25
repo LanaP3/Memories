@@ -37,7 +37,7 @@
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <button class="button is-link has-background-grey-light">
+                    <button class="button is-link is-outlined">
                     add friend
                     </button>
                 </div>
@@ -47,23 +47,34 @@
     </article>
 </div>
 
-<div class="tile">
-    <article class="tile is-parent">
-        % for image_id in list(album.images):
-        <div class="tile">
-            <article class="tile is-child box">
+<section class="section has-background-white-bis">
+    <div class="columns">
+        % from model import sort_in_columns
+        % from model import Picture
+        % for i in range(4):
+        % images = sort_in_columns(list(album.images),4,i)
+        <div class="column">
+
+            % for image_id in images:
+            % image = Picture(image_id, album.id)
+            <div class="box">
                 <img src= "{{ get_url('database', filename= image_id) }}" class="img-fluid" />
-                <form action="/image/{{image_id}}" method="POST">
-                    <div class="field is-grouped">
-                        <div class="control">
-                            <button class="button is-link">
-                            <i class="fa fa-bars" aria-hidden="true"></i>
-                            </button>
-                        </div>
+                <footer class="card-footer">    
+                    <a class="card-footer-item", href="/image/{{image_id}}">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </a>
+                    <div class="card-footer-item">
+                        % if len(image.likes) + len(image.dislikes) == 0:
+                        <progress class="progress is-danger" value=1 max=2></progress>
+                        % else:
+                        <progress class="progress is-danger" value={{len(image.likes)}} max={{len(image.likes)+len(image.dislikes)}}></progress>
+                        % end
+                        {{len(image.likes)}}<i class="fa-regular fa-heart"></i>
                     </div>
-                </form>
-            </article>
+                </footer>
+            </div>
+            % end
         </div>
         % end
-    </article>
-</div>
+    </div>
+</section>

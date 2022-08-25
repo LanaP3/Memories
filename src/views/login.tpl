@@ -22,7 +22,7 @@
     
     <div class="field is-grouped">
         <div class="control">
-            <button class="button is-link has-background-grey-light">
+            <button class="button is-link is-outlined">
             Login
             </button>
         </div>
@@ -54,7 +54,7 @@ FOR NEW USERS:</p>
     </div>
     <div class="field is-grouped">
         <div class="control">
-            <button class="button is-link has-background-grey-light">
+            <button class="button is-link is-outlined">
             Register
             </button>
         </div>

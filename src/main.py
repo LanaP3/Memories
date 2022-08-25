@@ -5,12 +5,10 @@ import sys
 from bottle import get, post, request
 from datetime import datetime
 from model import *
-#te pripise, errorje bi lahko dala da se vsi na istem mestu vedno izpisejo, npr. okvircek desno zgoraj
+
 #dodaj ikonce
-#drop-down seznam za izbiro albuma in creatorja
-#lepsa forma za uploadanje slik
-#da vstopis v sliko kar s klikom nanjo
 #komentarje, izpisejo se v vsakem primeru, ce jih se ni, nekaj v smislu: "no comments yet"
+#brisanje slik in dodajanje ikonc
 
 path_to_code = os.path.join(os.getcwd(),'..', "database", "secret.txt")
 with open(path_to_code, "r") as d:
@@ -87,7 +85,7 @@ def register():
         else:
             return bottle.template("login.tpl", note=note, error="This username is already taken. Please choose another one.")             
     else:
-        return bottle.template("login.tpl", note=note, error="Please enter your username and password. You may use numbers, lowercase and uppercase letters as well as symbols: _ % + * , # -") 
+        return bottle.template("login.tpl", note=note, error="Please enter your username and password. You may use numbers, lowercase and uppercase letters, as well as symbols: _ % + * , # -") 
 
 @bottle.get("/")
 def memories():
@@ -99,7 +97,10 @@ def main_page(error=None):
     list_of_albums = account.get_albums()
     note = current_note()
     if note == "new_album_error":
-        error = "Please choose name for your new album. You may use numbers, lowercase and uppercase letters as well as symbols: _ % + * , # -"
+        error = "Please choose name for your new album. You may use numbers, lowercase and uppercase letters, as well as symbols: _ % + * , # -"
+        note = None
+    elif note == "wrong ext":
+        error = "Please only use '.png', '.jpg' and '.jpeg' file extensions."
         note = None
     bottle.response.delete_cookie("album", path="/")
     bottle.response.delete_cookie("image", path="/")
@@ -110,11 +111,17 @@ def main_page(error=None):
 def upload_image():
     account = current_account()
     upload = bottle.request.files.get('upload')
-    account.new_image(upload)    
-    if account.albums == {}:
-        note = "That is a nice photo! Now create a new album and you can add the photo to it."
+    new_photo = account.new_image(upload)
+    if new_photo == "wrong ext":
+        note = "wrong ext"
+    elif new_photo == "old image":
+        note = "You already have this photo in your gallery."
     else:
-        note = "That is a nice photo! You can now add it to any of your albums. Just enter album info and submit."
+        new_photo
+        if account.albums == {}:
+            note = "That is a nice photo! Now create a new album and you can add the photo to it."
+        else:
+            note = "That is a nice photo! You can now add it to any of your albums. Just enter album info and submit."
     bottle.response.set_cookie("note", note, path="/", secret=CODE)
     bottle.redirect("/main_page/")
 
@@ -193,7 +200,7 @@ def remove_album():
     bottle.response.set_cookie("note", note, path="/", secret=CODE)
     bottle.redirect("/main_page/")                              
 
-@bottle.post("/image/<image_id>")
+@bottle.get("/image/<image_id>")
 def enter_image(image_id):
     bottle.response.set_cookie("image", image_id, path="/", secret=CODE)
     bottle.redirect("/image/")
@@ -204,14 +211,14 @@ def images():
     image = current_image()
     return bottle.template("image.tpl", account=account, image=image)
 
-@bottle.post("/like/")
+@bottle.get("/like/")
 def like_image():
     account = current_account()
     image = current_image()
     image.like(account)
     bottle.redirect("/image/")
 
-@bottle.post("/dislike/")
+@bottle.get("/dislike/")
 def dislike_image():
     account = current_account()
     image = current_image()

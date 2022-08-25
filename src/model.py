@@ -20,17 +20,26 @@ def write_json(data):
         json.dump(data, outfile, ensure_ascii=False, indent=4)
 
 
-def set_image_size(image_path, basewidth):
-    img = Image.open(image_path)
-    wpercent = (basewidth/float(img.size[0]))
-    hsize = int((float(img.size[1])*float(wpercent)))
-    img = img.resize((basewidth,hsize), Image.ANTIALIAS)
-    img.save(image_path)
-
 def check_grammar(word):
     if re.match("^[A-Za-z0-9_%+,*#-]*$", word): 
         return word
     return False
+
+def sort_in_columns(list, n, i):
+    '''returns elements of i-th colomn (starting at 0) if equally divided between n total columns'''
+    x = len(list)//n
+    m = len(list) - x*n
+    start = i*x
+    if i==m:
+        start += i
+        stop = start+x
+    elif i<m+1:
+        start += i
+        stop = start+x+1
+    else:
+        start += m
+        stop = start + x
+    return list[start:stop]
 
 class User:
     def __init__(self, username):
@@ -92,15 +101,14 @@ class User:
         name, ext = os.path.splitext(upload.filename)
         image_id = f"{name}.{self.username}{ext}"
         save_path =  os.path.join(image_path, image_id)
-        if ext not in ('.jpg', '.jpeg', '.png'):
-            return "Please only use '.jpeg', '.jpg' or '.png' file extensions."
+        if ext not in ('.jpg', '.jpeg', '.png', '.JPG'):
+            return "wrong ext"
         with open(save_path, "wb") as image_file:
             image_file.write(upload.file.read())
-        set_image_size(save_path, 300)
         
         data = read_json()
         if image_id in data[self.username]["images"]:    #image already saved
-            return None
+            return "old image"
         self.images.append(image_id)
         data[self.username]["images"].append(image_id)
         write_json(data)
@@ -238,22 +246,17 @@ class Picture:
 
     def like(self, account):
         name = account.username
-        if name not in self.likes:
+        if name in self.likes:
+            self.likes.remove(name)
+        elif name not in self. dislikes:
             self.likes.append(name)
         self.to_json()
 
     def dislike(self, account):
         name = account.username
-        if name not in self.dislikes:
+        if name in self.dislikes:
+            self.dislikes.remove(name)
+        elif name not in self.likes:
             self.dislikes.append(name)
         self.to_json()
-
-
-#    #def rating(self):
-#    #    if self.likes+self.dislikes == 0:
-#    #        return None
-#    #    else:
-#    #        return ((self.likes-self.dislikes)/(self.likes+self.dislikes) * 5) + 5
-#
-#
 
