@@ -7,7 +7,6 @@ from datetime import datetime
 from model import *
 
 #dodaj ikonce
-#komentarje, izpisejo se v vsakem primeru, ce jih se ni, nekaj v smislu: "no comments yet"
 #brisanje slik in dodajanje ikonc
 
 path_to_code = os.path.join(os.getcwd(),'..', "database", "secret.txt")
@@ -210,6 +209,14 @@ def images():
     account = current_account()
     image = current_image()
     return bottle.template("image.tpl", account=account, image=image)
+
+@bottle.get("/delete_image/<image_id>")
+def delete_image(image_id):
+    album = current_album()
+    Picture(image_id, album.id).delete()
+    note = "Picture has been removed from your album."
+    bottle.response.set_cookie("note", note, path="/", secret=CODE)
+    bottle.redirect("/album/")
 
 @bottle.get("/like/")
 def like_image():

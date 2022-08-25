@@ -229,17 +229,11 @@ class Picture:
         album.images[self.id]["comments"] = self.comments
         album.to_json()
 
-#    def delete(self, album, user):
-#        if user == self.owner:
-#            data = read_json()
-#            del data[self.owner][self.owner.albums]["album"]["images"][self.name]
-#            write_json(data)
-#        else:
-#            pass
-#
-#    def download(self):
-#        pass
-#
+    def delete(self):
+        album = Album(self.album_id)
+        del album.images[self.id]
+        album.to_json()
+
     def add_comment(self, account, text):
         self.comments.append([account.username, text])
         self.to_json()

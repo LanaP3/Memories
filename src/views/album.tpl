@@ -71,6 +71,11 @@
                         % end
                         {{len(image.likes)}}<i class="fa-regular fa-heart"></i>
                     </div>
+                    % if account.username == album.owner:
+                    <a class="card-footer-item", href="/delete_image/{{image_id}}">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                    % end
                 </footer>
             </div>
             % end

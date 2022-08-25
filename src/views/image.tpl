@@ -8,12 +8,31 @@
                 </figure>
             </div>
             <footer class="card-footer">
+                % if account.username in image.likes:
+                <a class="card-footer-item has-background-grey" href="/like/">
+                    like &nbsp; <i class="fa-regular fa-heart"></i>
+                </a>
+                <a class="card-footer-item" href="/dislike/">
+                    dislike &nbsp; <i class="fa-solid fa-xmark"></i>
+                </a>
+                
+                % elif account.username in image.dislikes:
+                <a class="card-footer-item" href="/like/">
+                    like &nbsp; <i class="fa-regular fa-heart"></i>
+                </a>
+                <a class="card-footer-item has-background-grey" href="/dislike/">
+                    dislike &nbsp; <i class="fa-solid fa-xmark"></i>
+                </a>
+                
+                % else:
                 <a class="card-footer-item" href="/like/">
                     like &nbsp; <i class="fa-regular fa-heart"></i>
                 </a>
                 <a class="card-footer-item" href="/dislike/">
                     dislike &nbsp; <i class="fa-solid fa-xmark"></i>
                 </a>
+                % end
+
                 <div class="card-footer-item" href="/like/">
                     % if len(image.likes) + len(image.dislikes) == 0:
                     <progress class="progress is-danger" value=1 max=2></progress>
