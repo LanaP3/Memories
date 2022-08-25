@@ -9,5 +9,5 @@ Notifications are displayed at the top of the page to inform the user about his 
 
 ## Sources
 Project is entirely my own personal work. However, I have taken some examples (which were modified and not just copied) from school lectures, bottle and bulma documentation.
-*https://bottlepy.org/docs/dev/tutorial.html
-*https://bulma.io/documentation/
+* https://bottlepy.org/docs/dev/tutorial.html
+* https://bulma.io/documentation/
