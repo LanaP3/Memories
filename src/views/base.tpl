@@ -74,6 +74,6 @@
       {{!base}}
     </section>
 
-    <footer>© 2022, Lana Prijon</footer>
+    <footer>&nbsp;&nbsp;&nbsp;© 2022, Lana Prijon</footer>
   </body>
 </html>
