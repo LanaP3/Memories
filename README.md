@@ -5,10 +5,11 @@ Furthermore, pictures in albums can be commented and liked/disliked. The owner o
 Others may also leave the album if they want to.
 
 ## Requirements
-
+* installed Python3
+* installed libraries: 'datetime', 'os', 'json' and  're'
 
 ## Instructions
-To start server, move to src folder and write <code>python main.py</code>.
+To start server, move to src folder and write <code>python main.py</code>. Then open the URL in browser.
 Notifications are displayed at the top of the page to inform the user about his options and changes.
 
 ## Sources

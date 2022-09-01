@@ -77,7 +77,7 @@ def register():
         else:
             return bottle.template("login.tpl", note=note, error="This username is already taken. Please choose another one.")             
     else:
-        return bottle.template("login.tpl", note=note, error="Please enter your username and password. You may use numbers, lowercase and uppercase letters, as well as symbols: _ % + * , # -") 
+        return bottle.template("login.tpl", note=note, error="Please enter your username and password. You may use numbers, lowercase and uppercase letters, as well as symbols:  _ * - and space.") 
 
 @bottle.get("/")
 def memories():
@@ -89,7 +89,7 @@ def main_page(error=None):
     list_of_albums = account.get_albums()
     note = current_note()
     if note == "new_album_error":
-        error = "Please choose a name for your new album. You may use numbers, lowercase and uppercase letters, as well as symbols: _ % + * , # -"
+        error = "Please choose a name for your new album. You may use numbers, lowercase and uppercase letters, as well as symbols: _ * - and space."
         note = None
     elif note == "wrong ext":
         error = "Please only use '.png', '.jpg' and '.jpeg' file extensions."
@@ -227,7 +227,7 @@ def dislike_image():
 def add_comment():
     account = current_account()
     image = current_image()
-    text = bottle.request.forms.getunicode("comment")
+    text = check_grammar(bottle.request.forms.getunicode("comment"))
     if text != "":
         image.add_comment(account, text)
     bottle.redirect("/image/")

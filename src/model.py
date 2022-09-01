@@ -17,7 +17,7 @@ def write_json(data):
 
 
 def check_grammar(word):
-    if re.match("^[A-Za-z0-9_%+,*#-]*$", word): 
+    if re.match("^[A-Za-z0-9_ *-]*$", word): 
         return word
     return False
 
