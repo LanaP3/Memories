@@ -71,12 +71,11 @@
         % for album in list_of_albums:
         % if album.owner != account.username:
         % album_id = album.name+"."+album.owner
-        <div class="tile">
         <form action="/album/{{album_id}}" method="POST">
             <div class="field is-grouped">
                 <div class="control">
-                    <button class="button is-link has-background-white-bis">
-                    {{album.name}}
+                    <button class="button is-link has-background-white-bis has-text-grey-dark">
+                    {{album.name}} &nbsp; <span class ='is-size-7 is-italic'>(by {{album.owner}})</span>
                     </button>
                 </div>
             </div>
@@ -120,7 +119,7 @@
                                     % for album in list_of_albums:
                                     % if album.owner != account.username:
                                     <option value={{album.id}}>
-                                        {{album.name}} by {{album.owner}}
+                                        {{album.name}} &nbsp; (by {{album.owner}})
                                     </option>  
                                     % end
                                     % end

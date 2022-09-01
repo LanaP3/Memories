@@ -1,1 +1,157 @@
-{}
+{
+    "zaba": {
+        "password": "aaa",
+        "images": [],
+        "albums": {
+            "moj_album.zaba": {
+                "name": "moj_album",
+                "owner": "zaba",
+                "date_added": "2022-09-01",
+                "access": [
+                    "zaba"
+                ],
+                "images": {}
+            }
+        }
+    },
+    "tjuln": {
+        "password": "gg",
+        "images": [
+            "IMG_2484.tjuln.JPG",
+            "91325BC2-C2CA-4E3F-AEEC-8ACD684A8721.tjuln.jpg"
+        ],
+        "albums": {
+            "moj_album.bacek": {
+                "name": "moj_album",
+                "owner": "bacek",
+                "date_added": "2022-09-01",
+                "access": [
+                    "bacek",
+                    "tjuln"
+                ],
+                "images": {
+                    "IMG_2491.bacek.JPG": {
+                        "album_owner": "bacek",
+                        "name": "IMG_2491",
+                        "likes": [
+                            "tjuln"
+                        ],
+                        "dislikes": [],
+                        "comments": [
+                            [
+                                "tjuln",
+                                "bon apetit"
+                            ]
+                        ]
+                    },
+                    "IMG_2484.tjuln.JPG": {
+                        "album_owner": "bacek",
+                        "name": "IMG_2484",
+                        "likes": [],
+                        "dislikes": [],
+                        "comments": []
+                    }
+                }
+            },
+            "moj_album.lana": {
+                "name": "moj_album",
+                "owner": "lana",
+                "date_added": "2022-09-01",
+                "access": [
+                    "lana",
+                    "tjuln"
+                ],
+                "images": {
+                    "IMG_2484.tjuln.JPG": {
+                        "album_owner": "lana",
+                        "name": "JPG",
+                        "likes": [],
+                        "dislikes": [],
+                        "comments": []
+                    }
+                }
+            },
+            "f.tjuln": {
+                "name": "f",
+                "owner": "tjuln",
+                "date_added": "2022-09-01",
+                "access": [
+                    "tjuln"
+                ],
+                "images": {
+                    "IMG_2484.tjuln.JPG": {
+                        "album_owner": "tjuln",
+                        "name": "JPG",
+                        "likes": [],
+                        "dislikes": [],
+                        "comments": []
+                    }
+                }
+            }
+        }
+    },
+    "bacek": {
+        "password": "bee",
+        "images": [
+            "IMG_2491.bacek.JPG"
+        ],
+        "albums": {
+            "moj_album.bacek": {
+                "name": "moj_album",
+                "owner": "bacek",
+                "date_added": "2022-09-01",
+                "access": [
+                    "bacek",
+                    "tjuln"
+                ],
+                "images": {
+                    "IMG_2491.bacek.JPG": {
+                        "album_owner": "bacek",
+                        "name": "IMG_2491",
+                        "likes": [
+                            "tjuln"
+                        ],
+                        "dislikes": [],
+                        "comments": [
+                            [
+                                "tjuln",
+                                "bon apetit"
+                            ]
+                        ]
+                    },
+                    "IMG_2484.tjuln.JPG": {
+                        "album_owner": "bacek",
+                        "name": "IMG_2484",
+                        "likes": [],
+                        "dislikes": [],
+                        "comments": []
+                    }
+                }
+            }
+        }
+    },
+    "lana": {
+        "password": "bbb",
+        "images": [],
+        "albums": {
+            "moj_album.lana": {
+                "name": "moj_album",
+                "owner": "lana",
+                "date_added": "2022-09-01",
+                "access": [
+                    "lana",
+                    "tjuln"
+                ],
+                "images": {
+                    "IMG_2484.tjuln.JPG": {
+                        "album_owner": "lana",
+                        "name": "JPG",
+                        "likes": [],
+                        "dislikes": [],
+                        "comments": []
+                    }
+                }
+            }
+        }
+    }
+}

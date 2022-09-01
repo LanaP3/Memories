@@ -89,7 +89,7 @@ def main_page(error=None):
     list_of_albums = account.get_albums()
     note = current_note()
     if note == "new_album_error":
-        error = "Please choose name for your new album. You may use numbers, lowercase and uppercase letters, as well as symbols: _ % + * , # -"
+        error = "Please choose a name for your new album. You may use numbers, lowercase and uppercase letters, as well as symbols: _ % + * , # -"
         note = None
     elif note == "wrong ext":
         error = "Please only use '.png', '.jpg' and '.jpeg' file extensions."
@@ -121,7 +121,7 @@ def upload_image():
 def create_new_album():
     account = current_account()
     album_name = check_grammar(bottle.request.forms.getunicode("new_album"))
-    if album_name:
+    if album_name and account.album_available(album_name):
         account.new_album(album_name)
         note = "You have successfully created a new album."
     else:

@@ -4,7 +4,11 @@ It enables user to upload pictures and add them to albums. These can be private,
 Furthermore, pictures in albums can be commented and liked/disliked. The owner of the album can also remove pictures, add new users to the album, or delete the album.
 Others may also leave the album if they want to.
 
+## Requirements
+
+
 ## Instructions
+To start server, move to src folder and write <code>python main.py</code>.
 Notifications are displayed at the top of the page to inform the user about his options and changes.
 
 ## Sources

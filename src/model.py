@@ -77,20 +77,20 @@ class User:
         data[username]["albums"] = {}
         write_json(data)
 
-    def album_available(self, album_id):
+    def album_available(self, album_name):
+        album_id = f'{album_name}.{self.username}'
         data = read_json()
         return album_id not in data[self.username]["albums"]        
 
     def new_album(self, album_name):
-        if self.album_available(album_name):
-            self.albums[f"{album_name}.{self.username}"] = {
-                "name": album_name,
-                "owner": self.username,
-                "date_added": str(datetime.date.today()),
-                "access": [self.username],
-                "images": {}
-                }
-            self.to_json()
+        self.albums[f"{album_name}.{self.username}"] = {
+            "name": album_name,
+            "owner": self.username,
+            "date_added": str(datetime.date.today()),
+            "access": [self.username],
+            "images": {}
+            }
+        self.to_json()
     
     def new_image(self, upload):
         name, ext = os.path.splitext(upload.filename)
