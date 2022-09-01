@@ -1,5 +1,5 @@
 # MEMORIES
-School project for the subject __Uvod v programeranje__.
+School project for the subject __Uvod v programiranje__.
 It enables user to upload pictures and add them to albums. These can be private, or we can also give access to selected friends.
 Furthermore, pictures in albums can be commented and liked/disliked. The owner of the album can also remove pictures, add new users to the album, or delete the album.
 Others may also leave the album if they want to.
